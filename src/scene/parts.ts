@@ -367,7 +367,8 @@ function gripGeometry(): BufferGeometry {
       const cz = Math.sin(a);
       const sy = Math.sign(cy) * Math.abs(cy) ** pwr;
       const sz = Math.sign(cz) * Math.abs(cz) ** pwr;
-      let y = curr.y + nx * sy * curr.hy;
+      let x = curr.x + nx * sy * curr.hy;
+      let y = curr.y + ny * sy * curr.hy;
       let z = curr.z + sz * curr.hz;
       // tuck a round channel where the folded worm lies, on the face toward the hinge axis
       const clearance = 0.043;
@@ -379,7 +380,7 @@ function gripGeometry(): BufferGeometry {
           z *= s;
         }
       }
-      positions.push(curr.x + ny * sy * curr.hy, y, z);
+      positions.push(x, y, z);
     }
   }
   const at = (row: number, col: number): number => row * around + (col % around);
@@ -532,7 +533,7 @@ export function buildCorkscrew(): { group: Group; worm: Group; cork: Mesh } {
   worm.add(mesh(new TubeGeometry(new CatmullRomCurve3(points, false, 'centripetal'), 120, 0.0082, 8), metal));
   const tip = mesh(new ConeGeometry(0.0082, 0.046, 10), metal);
   tip.rotation.x = Math.PI;
-  tip.position.y = -WORM_REACH - 0.012;
+  tip.position.y = -WORM_REACH - 0.023;
   worm.add(tip);
   group.add(worm);
 
