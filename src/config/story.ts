@@ -38,7 +38,6 @@ export const ANCHORS = {
   ritual: 'ritual',
   chapter: (n: number): string => `chapter-${n}`,
   inside: 'inside-the-box',
-  recipe: 'recipe',
   order: 'order',
   howToOrder: 'how-to-order',
 } as const;

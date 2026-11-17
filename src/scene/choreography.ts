@@ -82,10 +82,10 @@ export const T = {
 export const DIM = {
   box: { w: 1.9, h: 3.45, d: 0.82, t: 0.03, dividerX: 0.02, shelf1: 1.46, shelf2: 2.3 },
   bottle: { len: 3.05, r: 0.34 },
-  mini: { len: 1.05, r: 0.17 },
+  mini: { len: 1.05, r: 0.125 },
   pan: { r: 0.8, ri: 0.77, h: 0.85, floor: 0.04 },
   hob: { w: 3.0, h: 0.14, d: 2.6 },
-  glass: { h: 2.1, bowlBottom: 1.04, fillTop: 1.54 },
+  glass: { h: 2.1, bowlBottom: 0.4, fillTop: 1.5 },
   sieve: { r: 0.5, depth: 0.36 },
   spoon: { len: 2.0 },
   booklet: { w: 0.72, h: 0.96 },
@@ -218,16 +218,14 @@ export const SPICES: SpiceDef[] = [
   { kind: 'orange', bag: 'orange', bagPos: [0.1, -0.02, 0.035], bagRot: [HALF, 0, -0.3], release: 0.389, r: 0.44, a: deg(215), lift: 0.016, floatRot: [-0.04, 1.3, 0.03], stirK: 0.94, sieve: { at: 0.912, pos: [0.04, -0.2, 0.02], rot: [0.5, 0.6, 0.25] }, kit: { pos: [1.98, 0.065, 2.12], rot: [0.12, 1.2, 0.1] } },
   { kind: 'orange', bag: 'orange', bagPos: [0.0, 0.1, -0.035], bagRot: [HALF, 0, 0.9], release: 0.396, r: 0.43, a: deg(335), lift: 0.02, floatRot: [0.02, 2.4, -0.04], stirK: 1.06, kit: { pos: [2.36, 0.1, 2.3], rot: [0.14, 2.2, 0.08] } },
   // Ceylon cinnamon sticks
-  { kind: 'cinnamon', bag: 'cinnamon', bagPos: [-0.065, -0.04, 0], bagRot: [0.4, 0, HALF], release: 0.408, r: 0.1, a: deg(250), lift: 0.05, floatRot: [0, 0.5, 0], stirK: 0.9, kit: { pos: [-0.35, 0.065, 2.85], rot: [0, 0.5, 0] } },
-  { kind: 'cinnamon', bag: 'cinnamon', bagPos: [0.065, -0.04, 0], bagRot: [1.4, 0, HALF], release: 0.414, r: 0.3, a: deg(60), lift: 0.14, floatRot: [0, -0.7, 0.42], stirK: 0.9, kit: { pos: [-0.25, 0.065, 3.05], rot: [0, 0.62, 0] } },
+  { kind: 'cinnamon', bag: 'cinnamon', bagPos: [-0.056, -0.02, 0.008], bagRot: [0.35, 0, HALF], release: 0.408, r: 0.1, a: deg(250), lift: 0.05, floatRot: [0, 0.5, 0], stirK: 0.9, kit: { pos: [-0.3, 0.06, 2.94], rot: [0.25, 0.48, 0] } },
+  { kind: 'cinnamon', bag: 'cinnamon', bagPos: [0.056, -0.02, -0.008], bagRot: [1.15, 0, HALF], release: 0.414, r: 0.3, a: deg(60), lift: 0.14, floatRot: [0, -0.7, 0.42], stirK: 0.9, kit: { pos: [-0.25, 0.06, 3.036], rot: [1.05, 0.48, 0] } },
   // star anise
   { kind: 'star', bag: 'orange', bagPos: [0.14, -0.06, 0.07], bagRot: [HALF, 0, 0.3], release: 0.424, r: 0.2, a: deg(150), lift: 0.035, floatRot: [0.05, 0.2, 0.04], stirK: 1.1, kit: { pos: [1.3, 0.035, 2.85], rot: [0, 0.3, 0] } },
   { kind: 'star', bag: 'orange', bagPos: [-0.2, -0.18, 0.06], bagRot: [HALF, 0, 1.1], release: 0.43, r: 0.6, a: deg(20), lift: 0.03, floatRot: [-0.05, 1.7, 0.03], stirK: 0.97, sieve: { at: 0.918, pos: [-0.2, -0.235, 0.1], rot: [0.3, 1.0, -0.4] }, kit: { pos: [1.72, 0.035, 2.98], rot: [0, 1.1, 0] } },
-  // cardamom pods
-  { kind: 'cardamom', bag: 'orange', bagPos: [-0.25, -0.27, 0.0], bagRot: [0, 0, 1.2], release: 0.438, r: 0.63, a: deg(275), lift: 0.03, floatRot: [0, 0.6, 0], stirK: 1.12, kit: { pos: [0.72, 0.045, 2.95], rot: [0, 0.4, 0] } },
-  { kind: 'cardamom', bag: 'orange', bagPos: [-0.12, -0.29, 0.02], bagRot: [0, 0, 1.8], release: 0.441, r: 0.18, a: deg(305), lift: 0.04, floatRot: [0, 2.1, 0], stirK: 1.0, sieve: { at: 0.922, pos: [0.18, -0.265, -0.14], rot: [0.2, 0.4, 0.5] }, kit: { pos: [0.88, 0.045, 3.08], rot: [0, 1.6, 0] } },
-  { kind: 'cardamom', bag: 'orange', bagPos: [0.05, -0.28, 0.0], bagRot: [0, 0, 1.4], release: 0.444, r: 0.64, a: deg(150), lift: 0.03, floatRot: [0, 1.2, 0], stirK: 0.93, kit: { pos: [0.98, 0.045, 2.88], rot: [0, 2.5, 0] } },
-  { kind: 'cardamom', bag: 'orange', bagPos: [0.2, -0.27, 0.02], bagRot: [0, 0, 1.7], release: 0.447, r: 0.3, a: deg(18), lift: 0.045, floatRot: [0, 2.9, 0], stirK: 1.05, kit: { pos: [0.8, 0.045, 3.2], rot: [0, 0.9, 0] } },
+  // cardamom pods — exactly two, from the packet through the kit still
+  { kind: 'cardamom', bag: 'orange', bagPos: [-0.22, -0.24, 0.0], bagRot: [0, 0, 1.15], release: 0.438, r: 0.63, a: deg(275), lift: 0.03, floatRot: [0, 0.6, 0], stirK: 1.12, kit: { pos: [0.72, 0.045, 2.95], rot: [0, 0.4, 0] } },
+  { kind: 'cardamom', bag: 'orange', bagPos: [0.16, -0.22, 0.02], bagRot: [0, 0, 1.7], release: 0.446, r: 0.18, a: deg(305), lift: 0.04, floatRot: [0, 2.1, 0], stirK: 1.0, sieve: { at: 0.922, pos: [0.18, -0.265, -0.14], rot: [0.2, 0.4, 0.5] }, kit: { pos: [0.88, 0.045, 3.08], rot: [0, 1.6, 0] } },
   // cloves
   { kind: 'clove', bag: 'orange', bagPos: [-0.3, -0.2, 0.03], bagRot: [0, 0, 0.5], release: 0.452, r: 0.66, a: deg(65), lift: 0.03, floatRot: [0, 0.3, 0], stirK: 1.08, kit: { pos: [0.22, 0.025, 2.82], rot: [0, 0.3, 0] } },
   { kind: 'clove', bag: 'orange', bagPos: [0.28, -0.18, 0.0], bagRot: [0, 0, -0.6], release: 0.4545, r: 0.52, a: deg(250), lift: 0.03, floatRot: [0, 1.9, 0], stirK: 0.95, sieve: { at: 0.926, pos: [-0.05, -0.3, -0.18], rot: [1.2, 0.5, 0.3] }, kit: { pos: [0.36, 0.025, 2.98], rot: [0, 1.4, 0] } },
@@ -365,6 +363,8 @@ export interface StoryState {
   glass: Pose;
   glassVisible: boolean;
   glassFill: number;
+  /** 1 in the story. The closing still scales the mug down beside the 750 ml bottle. */
+  glassScale: number;
   heat: number;
   simmer: number;
   panSteam: number;
@@ -590,7 +590,7 @@ export function computeState(introIn: number, pIn: number): StoryState {
   const mini = bottlePose(miniMouth, miniTilt, ML);
   const miniFill = 1 - seg(p, 0.735, T.spiritPour[1]);
   const capOff = seg(p, 0.706, 0.72);
-  const capRest: V3 = [MINI_REST[0] + 0.34, 0.035, MINI_REST[2] + 0.32];
+  const capRest: V3 = [MINI_REST[0] + 0.34, 0.038, MINI_REST[2] + 0.32];
   const capPos =
     p < 0.72
       ? add(miniMouth, [0, -0.045 + capOff * 0.2, 0])
@@ -745,6 +745,7 @@ export function computeState(introIn: number, pIn: number): StoryState {
     glass: { pos: glassPos, rot: [0, 0, 0] },
     glassVisible: p > 0.822,
     glassFill,
+    glassScale: 1,
     heat,
     simmer,
     panSteam,
@@ -765,7 +766,7 @@ export function computeState(introIn: number, pIn: number): StoryState {
 /** World positions of each kit item in the "Inside the box" arrangement, for numbered markers. */
 export const KIT_MARKERS: { id: string; at: V3 }[] = [
   { id: 'wine', at: [-0.3, 2.35, 1.75] },
-  { id: 'cinnamon', at: [-0.3, 0.2, 2.95] },
+  { id: 'cinnamon', at: [-0.275, 0.2, 2.99] },
   { id: 'orange', at: [1.96, 0.25, 2.14] },
   { id: 'star-anise', at: [1.5, 0.2, 2.92] },
   { id: 'cardamom', at: [0.85, 0.2, 3.04] },
@@ -804,7 +805,10 @@ export function kitState(): StoryState {
   return s;
 }
 
-/** Closed box, bottle, booklet, and a finished glass for the closing section. */
+/**
+ * Closed box, 750 ml bottle, 40 ml orange aperitif, booklet, and a finished glass.
+ * The mug is scaled to a serving glass: about two-fifths the height of the wine bottle.
+ */
 export function closingState(): StoryState {
   const s = computeState(1, 0);
   const L = DIM.bottle.len;
@@ -812,24 +816,50 @@ export function closingState(): StoryState {
   s.lid = 0;
   s.bottleMouth = [0.42, L, 0.75];
   s.bottle = bottlePose(s.bottleMouth, 0, L);
-  s.booklet = { pos: [1.28, 0, 0.05], rot: [-0.2, -0.22, 0] };
+  s.booklet = { pos: [1.12, 0, 0.08], rot: [-0.2, -0.22, 0] };
   s.bagsVisible = false;
   s.bagItems = SPICES.map(() => ({ visible: false, slide: 0 }));
   s.corkscrew = { pos: [0, -5, 0], rot: [0, 0, 0] };
-  s.mini = bottlePose([0, -5, 0], 0, DIM.mini.len);
-  s.cap = { pos: [0, -5, 0], rot: [0, 0, 0] };
-  s.glass = { pos: [2.0, 0, 1.35], rot: [0, 0, 0] };
+  const miniMouth: V3 = [1.52, DIM.mini.len, 1.82];
+  s.miniMouth = miniMouth;
+  s.mini = bottlePose(miniMouth, 0, DIM.mini.len);
+  s.miniFill = 1;
+  s.cap = { pos: add(miniMouth, [0, -0.045, 0]), rot: [0, 0.35, 0] };
+  s.glassScale = 0.58;
+  s.glass = { pos: [2.18, 0, 1.55], rot: [0, 0, 0] };
   s.glassVisible = true;
   s.glassFill = 1;
   s.glassSteam = 0.9;
-  // a little garnish beside the glass
-  s.spices = SPICES.map((d, i) => {
-    if (i === 0) return { visible: true, pos: [0.95, 0.03, 1.95] as V3, rot: [0, 0.4, 0] as V3 };
-    if (i === 1) return { visible: true, pos: [1.22, 0.07, 2.12] as V3, rot: [0.16, 1.5, 0.08] as V3 };
-    if (i === 3) return { visible: true, pos: [0.3, 0.065, 2.2] as V3, rot: [0, 0.35, 0] as V3 };
-    if (i === 4) return { visible: true, pos: [0.36, 0.065, 2.36] as V3, rot: [0, 0.2, 0] as V3 };
-    if (i === 5) return { visible: true, pos: [0.85, 0.035, 2.45] as V3, rot: [0, 0.6, 0] as V3 };
-    return { visible: false, pos: d.kit.pos, rot: d.kit.rot };
+  // Garnish in front of the bottle: the spices already there, plus both cardamom pods and every clove.
+  const garnish: Partial<Record<SpiceKind, Pose[]>> = {
+    orange: [
+      { pos: [0.95, 0.03, 1.95], rot: [0, 0.4, 0] },
+      { pos: [1.22, 0.07, 2.12], rot: [0.16, 1.5, 0.08] },
+    ],
+    cinnamon: [
+      { pos: [0.3, 0.065, 2.2], rot: [0, 0.35, 0] },
+      { pos: [0.36, 0.065, 2.36], rot: [0, 0.2, 0] },
+    ],
+    star: [{ pos: [0.85, 0.035, 2.45], rot: [0, 0.6, 0] }],
+    cardamom: [
+      { pos: [0.58, 0.05, 2.7], rot: [0.1, 0.45, 0.06] },
+      { pos: [0.76, 0.05, 2.58], rot: [0, 1.65, 0.12] },
+    ],
+    clove: [
+      { pos: [0.08, 0.03, 2.58], rot: [0, 0.35, 0] },
+      { pos: [0.22, 0.03, 2.72], rot: [0, 1.45, 0] },
+      { pos: [0.38, 0.03, 2.62], rot: [0, 2.55, 0] },
+      { pos: [0.14, 0.03, 2.84], rot: [0, 0.9, 0] },
+      { pos: [0.42, 0.03, 2.8], rot: [0, 3.4, 0] },
+    ],
+  };
+  const placed: Partial<Record<SpiceKind, number>> = {};
+  s.spices = SPICES.map((d) => {
+    const list = garnish[d.kind] ?? [];
+    const n = placed[d.kind] ?? 0;
+    placed[d.kind] = n + 1;
+    const pose = list[n];
+    return pose ? { visible: true, pos: pose.pos, rot: pose.rot } : { visible: false, pos: d.kit.pos, rot: d.kit.rot };
   });
   s.camera = {
     target: [0.25, 1.55, 0.7],

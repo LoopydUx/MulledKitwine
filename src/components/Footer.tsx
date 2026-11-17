@@ -1,4 +1,4 @@
-import { assets, brand } from '../config/product';
+import { brand } from '../config/product';
 import { ANCHORS } from '../config/story';
 import type { StageMode } from '../hooks/useStageMode';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -16,11 +16,6 @@ export function Footer({ mode, canAnimate, onChoose }: { mode: StageMode; canAni
         <ul className="site-footer__links">
           <li>
             <a href={`#${ANCHORS.top}`}>{t.footer.replay}</a>
-          </li>
-          <li>
-            <a href={assets.recipePdf} target="_blank" rel="noopener">
-              {t.footer.recipe}
-            </a>
           </li>
           <li>
             <a href={brand.website.url} target="_blank" rel="noopener">

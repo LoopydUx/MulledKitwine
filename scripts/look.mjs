@@ -2,7 +2,7 @@
  * Quick screenshots while tuning:  npm run look -- <view> <query> <name> <items>
  *   view   desktop | wide | laptop | tablet | mobile | small
  *   items  comma list of: hero, a story progress (0..1), #anchor, #anchor+px, yPX, full
- * Example: npm run look -- mobile "motion=full&freeze=1" m "hero,0.262,0.607,#recipe"
+ * Example: npm run look -- mobile "motion=full&freeze=1" m "hero,0.262,0.607,#inside-the-box"
  * Images are written to the system temp folder under cana_view/.
  */
 import os from 'node:os';

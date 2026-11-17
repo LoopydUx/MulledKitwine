@@ -71,8 +71,6 @@ export const packaging = {
 } as const;
 
 export const assets = {
-  recipePdf: '/recipe/cantina-cana-mulled-wine-recipe-book.pdf',
-  recipePdfSize: '2.7 MB',
   bookletCover: '/textures/booklet-cover.webp',
   bookletSpread: '/recipe/booklet-instructions.webp',
   textures: {

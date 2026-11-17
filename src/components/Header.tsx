@@ -42,7 +42,6 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const links = [
     { href: `#${ANCHORS.ritual}`, label: t.nav.ritual },
     { href: `#${ANCHORS.inside}`, label: t.nav.inside },
-    { href: `#${ANCHORS.recipe}`, label: t.nav.recipe },
   ];
 
   return (
@@ -119,7 +118,6 @@ export function Header() {
         <nav className="site-nav" aria-label={t.nav.primary}>
           <a href={`#${ANCHORS.ritual}`}>{t.nav.ritual}</a>
           <a href={`#${ANCHORS.inside}`}>{t.nav.inside}</a>
-          <a href={`#${ANCHORS.recipe}`}>{t.nav.recipe}</a>
         </nav>
         <div className="site-header__actions">
           <LanguageToggle className="site-header__lang" />

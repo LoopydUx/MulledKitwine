@@ -123,10 +123,121 @@ save_webp(spread.resize((1500, round(1500 * spread.height / spread.width)), Imag
 cover_spread = pages[6]
 save_webp(cover_spread.resize((1500, round(1500 * cover_spread.height / cover_spread.width)), Image.LANCZOS), REC / "booklet-cover-spread.webp", 82)
 
+def draw_cinnamon_illustration() -> None:
+    """Tied Ceylon quills in the booklet's burgundy line, matching the other ingredients."""
+    import math
+
+    from PIL import ImageDraw
+
+    ink = (122, 40, 52, 255)
+    scale = 4
+    image = Image.new("RGBA", (520 * scale, 380 * scale), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    weight = 7 * scale
+
+    def stroke(points: list[tuple[float, float]], width: int = weight) -> None:
+        draw.line([(round(x), round(y)) for x, y in points], fill=ink, width=width, joint="curve")
+        radius = width / 2
+        for x, y in (points[0], points[-1]):
+            draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=ink)
+
+    def into(local: tuple[float, float], origin: tuple[float, float], angle: float) -> tuple[float, float]:
+        c, s = math.cos(angle), math.sin(angle)
+        return (origin[0] + local[0] * c - local[1] * s, origin[1] + local[0] * s + local[1] * c)
+
+    def quill(origin: tuple[float, float], angle: float, length: float, radius: float, roll: float) -> None:
+        steps = 36
+
+        def arc(cx: float, a0: float, a1: float) -> list[tuple[float, float]]:
+            return [into((cx + math.cos(a0 + (a1 - a0) * i / steps) * radius, math.sin(a0 + (a1 - a0) * i / steps) * radius), origin, angle) for i in range(steps + 1)]
+
+        outline = (
+            arc(0, math.pi / 2, math.pi * 1.5)
+            + [into((length, -radius), origin, angle)]
+            + arc(length, -math.pi / 2, math.pi / 2)
+            + [into((0, radius), origin, angle)]
+        )
+        stroke(outline, weight)
+        for frac in (0.38, -0.28):
+            stroke(
+                [into((radius * 0.15, frac * radius), origin, angle), into((length - radius * 0.2, frac * radius), origin, angle)],
+                max(3 * scale, weight // 3),
+            )
+        spiral: list[tuple[float, float]] = []
+        turns = 1.65
+        for i in range(70):
+            t = i / 69
+            a = roll + t * turns * math.tau
+            rad = radius * (0.08 + 0.72 * t)
+            spiral.append(into((math.cos(a) * rad, math.sin(a) * rad), origin, angle))
+        stroke(spiral, max(4 * scale, weight // 2))
+
+    angle = -0.62
+    radius = 46 * scale
+    length = 300 * scale
+    gap = radius * 2.05
+    px, py = -math.sin(angle) * gap, math.cos(angle) * gap
+    base = (150 * scale, 250 * scale)
+    quill(base, angle, length, radius, -math.pi / 2)
+    quill((base[0] + px, base[1] + py), angle, length * 0.96, radius * 0.94, 0.4)
+
+    # jute bow across the pair, same ink as the booklet drawings
+    along = (math.cos(angle), math.sin(angle))
+    across = (-math.sin(angle), math.cos(angle))
+    mid = (
+        base[0] + px * 0.5 + along[0] * length * 0.48,
+        base[1] + py * 0.5 + along[1] * length * 0.48,
+    )
+    bow = max(4 * scale, weight // 2)
+    reach = radius * 2.35
+    stroke(
+        [
+            (mid[0] - across[0] * reach, mid[1] - across[1] * reach),
+            (mid[0] + across[0] * reach, mid[1] + across[1] * reach),
+        ],
+        bow,
+    )
+    loop_r = 22 * scale
+    for side in (1, -1):
+        loop = []
+        for i in range(28):
+            a = (i / 27) * math.pi
+            lx = mid[0] + along[0] * math.sin(a) * loop_r * 0.55 + across[0] * side * (8 * scale + math.sin(a) * loop_r)
+            ly = mid[1] + along[1] * math.sin(a) * loop_r * 0.55 + across[1] * side * (8 * scale + math.sin(a) * loop_r)
+            loop.append((lx, ly))
+        stroke(loop, bow)
+        tail = [
+            mid,
+            (mid[0] + along[0] * side * reach * 0.45 + across[0] * side * 4 * scale, mid[1] + along[1] * side * reach * 0.45 + across[1] * side * 4 * scale),
+            (mid[0] + along[0] * side * reach * 0.9, mid[1] + along[1] * side * reach * 0.9 + 10 * scale),
+        ]
+        stroke(tail, bow)
+
+    alpha = image.getchannel("A")
+    bbox = alpha.point(lambda v: 255 if v > 12 else 0).getbbox()
+    if not bbox:
+        raise RuntimeError("cinnamon illustration drew nothing")
+    pad = 12 * scale
+    crop = image.crop((max(bbox[0] - pad, 0), max(bbox[1] - pad, 0), min(bbox[2] + pad, image.width), min(bbox[3] + pad, image.height)))
+    longest = max(crop.size)
+    crop = crop.resize((round(crop.width * 420 / longest), round(crop.height * 420 / longest)), Image.Resampling.LANCZOS)
+    # hard ink, matching the booklet extractions
+    import numpy as np
+
+    pixels = np.array(crop)
+    pixels[:, :, 0] = 122
+    pixels[:, :, 1] = 40
+    pixels[:, :, 2] = 52
+    pixels[:, :, 3] = np.where(pixels[:, :, 3] > 96, 255, 0)
+    crop = Image.fromarray(pixels, "RGBA")
+    out = ILL / "cinnamon.png"
+    crop.save(out, optimize=True)
+    print(f"  {out.relative_to(ROOT)}  {crop.size[0]}x{crop.size[1]}  {out.stat().st_size // 1024} KB")
+
+
 print("Ingredient illustrations")
 ILLUSTRATIONS = {
     "wine": (0, (190, 348, 305, 578)),
-    "cinnamon": (0, (685, 451, 865, 568)),
     "orange": (1, (160, 415, 335, 572)),
     "star-anise": (1, (690, 410, 850, 570)),
     "cardamom": (2, (180, 400, 320, 560)),
@@ -155,6 +266,7 @@ for name, (page, box) in ILLUSTRATIONS.items():
     out = ILL / f"{name}.png"
     img.save(out, optimize=True)
     print(f"  {out.relative_to(ROOT)}  {img.size[0]}x{img.size[1]}  {out.stat().st_size // 1024} KB")
+draw_cinnamon_illustration()
 
 print("Recipe PDF")
 dest = REC / "cantina-cana-mulled-wine-recipe-book.pdf"

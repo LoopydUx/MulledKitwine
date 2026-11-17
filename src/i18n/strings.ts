@@ -42,7 +42,7 @@ export interface Strings {
     playAnimated: string;
     showStills: string;
   };
-  kit: { eyebrow: string; title: string; intro: string; included: string; kitchenTitle: string; kitchenBody: string; alt: string };
+  kit: { eyebrow: string; title: string; intro: string; included: string; alt: string };
   recipe: {
     eyebrow: string;
     title: string;
@@ -57,15 +57,12 @@ export interface Strings {
     fromKitchen: string;
     fromKitchenList: string;
     read: string;
-    download: string;
     pdfNote: string;
     bookletAlt: string;
   };
   order: {
     title: string;
     body: string;
-    contentsTitle: string;
-    contents: string[];
     cta: string;
     ctaOnline: string;
     howTitle: string;
@@ -76,7 +73,7 @@ export interface Strings {
     priceNote: string;
     alt: string;
   };
-  footer: { replay: string; recipe: string; website: string; instagram: string; responsible: string; links: string };
+  footer: { replay: string; website: string; instagram: string; responsible: string; links: string };
 }
 
 const spirit = product.spirit;
@@ -144,7 +141,7 @@ const en: Strings = {
         title: 'Pour. Strain. Share.',
         body: 'Strain through a fine sieve into a heat-resistant glass and serve warm.',
         note: 'Sweeten to taste; the recipe suggests approximately one teaspoon of sugar per cup.',
-        alt: 'The saucepan pours through a fine sieve into a stemmed glass; the orange and whole spices stay in the sieve.',
+        alt: 'The saucepan pours through a fine sieve into a cut-crystal mug; the orange and whole spices stay in the sieve.',
       },
     ],
     ingredients: { orange: 'Dried oranges', cinnamon: 'Cinnamon sticks', star: 'Star anise', cardamom: 'Cardamom', clove: 'Cloves' },
@@ -159,7 +156,7 @@ const en: Strings = {
     finale: {
       line: 'Crafted with care. Shared with warmth.',
       note: 'Sweeten to taste; the recipe suggests approximately one teaspoon of sugar per cup.',
-      alt: 'A stemmed glass of warm mulled wine with a little steam rising.',
+      alt: 'A cut-crystal mug of warm mulled wine, handle on the right, with a little steam rising.',
     },
     loading: 'Preparing the scene',
     stillsBecauseMotion: 'You prefer reduced motion, so the ritual is shown as still compositions.',
@@ -172,8 +169,6 @@ const en: Strings = {
     title: 'Inside the box',
     intro: 'Everything the recipe calls for, gathered in one burgundy box.',
     included: 'Included in the kit',
-    kitchenTitle: 'From your kitchen',
-    kitchenBody: 'The saucepan, hob, spoon, sieve, and glass shown in the ritual are not part of the kit. Sugar is optional and not included.',
     alt: 'The open gift box with its contents set out in front: wine bottle, mini bottle, recipe booklet, dried orange slices, star anise, cardamom, cloves, cinnamon sticks and corkscrew.',
   },
   recipe: {
@@ -206,20 +201,12 @@ const en: Strings = {
     fromKitchen: 'From your kitchen',
     fromKitchenList: 'Saucepan, spoon, fine sieve, heat-resistant glasses or cups. Sugar, if desired.',
     read: 'Read the recipe book',
-    download: 'Download the recipe',
     pdfNote: 'PDF',
     bookletAlt: 'The instructions spread of the Cantina Cana recipe booklet, in English and Arabic.',
   },
   order: {
-    title: 'Pour. Warm. Share.',
-    body: 'A little preparation. A warmer evening.',
-    contentsTitle: 'In every kit',
-    contents: [
-      '750 ml dry red wine, vintage 2023',
-      `40 ml ${spirit.inSentence.en}`,
-      'Ceylon cinnamon, dried oranges, star anise, cardamom, cloves',
-      'Recipe booklet and corkscrew',
-    ],
+    title: 'Pour. Spice. Heat.',
+    body: 'And share warm moments together.',
     cta: 'Get the kit',
     ctaOnline: 'Order online',
     howTitle: 'How to order',
@@ -228,11 +215,10 @@ const en: Strings = {
     instagram: 'Message on Instagram',
     boutique: 'Visit in person',
     priceNote: 'Price and availability are confirmed by Cantina Cana.',
-    alt: 'The closed gift box, the wine bottle, the recipe booklet and a steaming glass of mulled wine arranged together.',
+    alt: 'The closed gift box, the 750 ml wine bottle, the 40 ml orange aperitif, the recipe booklet and a steaming glass of mulled wine arranged together.',
   },
   footer: {
     replay: 'Replay the ritual',
-    recipe: 'Recipe book (PDF)',
     website: 'Website',
     instagram: 'Instagram',
     responsible: 'Contains alcohol. Please enjoy responsibly.',
@@ -303,7 +289,7 @@ const ar: Strings = {
         title: 'اسكب. صفِّ. شارك.',
         body: 'صفِّ المشروب عبر مصفاة ناعمة في كأس مقاوم للحرارة، وقدّمه دافئًا.',
         note: 'أضف السكر حسب الرغبة، ينصح بملعقة صغيرة لكل كوب.',
-        alt: 'الطنجرة تسكب عبر مصفاة ناعمة في كأس ذي ساق، ويبقى البرتقال والتوابل الكاملة في المصفاة.',
+        alt: 'الطنجرة تسكب عبر مصفاة ناعمة في كأس كريستال بمقبض، ويبقى البرتقال والتوابل الكاملة في المصفاة.',
       },
     ],
     ingredients: { orange: 'برتقال مجفف', cinnamon: 'أعواد القرفة', star: 'اليانسون النجمي', cardamom: 'الهيل', clove: 'القرنفل' },
@@ -318,7 +304,7 @@ const ar: Strings = {
     finale: {
       line: 'صُنع بعناية. يُشارَك بدفء.',
       note: 'أضف السكر حسب الرغبة، ينصح بملعقة صغيرة لكل كوب. قدّمه دافئًا وصحة وهنا!',
-      alt: 'كأس ذو ساق من النبيذ الساخن يتصاعد منه قليل من البخار.',
+      alt: 'كأس كريستال بمقبض من النبيذ الساخن يتصاعد منه قليل من البخار.',
     },
     loading: 'جارٍ تحضير المشهد',
     stillsBecauseMotion: 'تفضّل تقليل الحركة، لذلك تُعرض الطقوس كصور ثابتة.',
@@ -331,8 +317,6 @@ const ar: Strings = {
     title: 'داخل العلبة',
     intro: 'كل ما تحتاجه الوصفة، مجموعًا في علبة عنّابية واحدة.',
     included: 'ضمن المجموعة',
-    kitchenTitle: 'من مطبخك',
-    kitchenBody: 'الطنجرة والموقد والملعقة والمصفاة والكأس التي تظهر في الطقوس ليست ضمن المجموعة. السكر اختياري وغير مشمول.',
     alt: 'علبة الهدايا مفتوحة ومحتوياتها مصفوفة أمامها: زجاجة النبيذ، الزجاجة الصغيرة، كتيّب الوصفة، شرائح البرتقال المجفف، اليانسون النجمي، الهيل، القرنفل، أعواد القرفة، والفتاحة.',
   },
   recipe: {
@@ -365,20 +349,12 @@ const ar: Strings = {
     fromKitchen: 'من مطبخك',
     fromKitchenList: 'طنجرة، ملعقة، مصفاة ناعمة، وكؤوس أو أكواب مقاومة للحرارة. والسكر حسب الرغبة.',
     read: 'اقرأ كتيّب الوصفة',
-    download: 'حمّل الوصفة',
     pdfNote: 'PDF',
     bookletAlt: 'صفحتا طريقة التحضير في كتيّب وصفات كانتينا كانا، بالإنجليزية والعربية.',
   },
   order: {
-    title: 'اسكب. سخّن. شارك.',
-    body: 'قليل من التحضير. أمسية أكثر دفئًا.',
-    contentsTitle: 'في كل مجموعة',
-    contents: [
-      '750 مل نبيذ أحمر جاف، إنتاج 2023',
-      `40 مل ${spirit.inSentence.ar}`,
-      'قرفة سيلانية، برتقال مجفف، يانسون نجمي، هيل، قرنفل',
-      'كتيّب الوصفة وفتاحة النبيذ',
-    ],
+    title: 'اسكب. تبّل. سخّن.',
+    body: 'وشارك لحظات دافئة معًا.',
     cta: 'احصل على المجموعة',
     ctaOnline: 'اطلب عبر الإنترنت',
     howTitle: 'طريقة الطلب',
@@ -387,11 +363,10 @@ const ar: Strings = {
     instagram: 'راسلنا على إنستغرام',
     boutique: 'زُرنا شخصيًا',
     priceNote: 'السعر والتوفّر يؤكَّدان من كانتينا كانا.',
-    alt: 'علبة الهدايا المغلقة وزجاجة النبيذ وكتيّب الوصفة وكأس نبيذ ساخن يتصاعد منه البخار، مرتّبة معًا.',
+    alt: 'علبة الهدايا المغلقة وزجاجة النبيذ سعة 750 مل وزجاجة الأبيريتيف سعة 40 مل وكتيّب الوصفة وكأس نبيذ ساخن يتصاعد منه البخار، مرتّبة معًا.',
   },
   footer: {
     replay: 'أعد الطقوس من البداية',
-    recipe: 'كتيّب الوصفة (PDF)',
     website: 'الموقع الإلكتروني',
     instagram: 'إنستغرام',
     responsible: 'يحتوي على كحول. استمتع بمسؤولية.',

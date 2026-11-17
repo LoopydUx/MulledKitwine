@@ -94,7 +94,7 @@ export function createLiquidMaterial(options: { deep: string; sheen: string; cli
 }
 
 /** Darkened silhouette edges: what clear glass looks like against a bright backdrop. */
-export function createGlassEdgeMaterial(color = '#3a2a26', opacity = 0.5, base = 0.03): ShaderMaterial {
+export function createGlassEdgeMaterial(color = '#3a2a26', opacity = 0.5, base = 0.03, power = 2.4): ShaderMaterial {
   return new ShaderMaterial({
     transparent: true,
     depthWrite: false,
@@ -102,7 +102,12 @@ export function createGlassEdgeMaterial(color = '#3a2a26', opacity = 0.5, base =
     fog: true,
     uniforms: UniformsUtils.merge([
       UniformsLib.fog,
-      { uColor: { value: new Color(color) }, uOpacity: { value: opacity }, uBase: { value: base } },
+      {
+        uColor: { value: new Color(color) },
+        uOpacity: { value: opacity },
+        uBase: { value: base },
+        uPower: { value: power },
+      },
     ]),
     vertexShader: /* glsl */ `
       varying vec3 vNormal;
@@ -120,11 +125,12 @@ export function createGlassEdgeMaterial(color = '#3a2a26', opacity = 0.5, base =
       uniform vec3 uColor;
       uniform float uOpacity;
       uniform float uBase;
+      uniform float uPower;
       varying vec3 vNormal;
       varying vec3 vView;
       #include <fog_pars_fragment>
       void main() {
-        float rim = pow(1.0 - abs(dot(normalize(vNormal), normalize(vView))), 2.4);
+        float rim = pow(1.0 - abs(dot(normalize(vNormal), normalize(vView))), uPower);
         gl_FragColor = vec4(uColor, rim * uOpacity + uBase);
         #include <colorspace_fragment>
         #include <fog_fragment>
@@ -138,11 +144,14 @@ export function createGlassEdgeMaterial(color = '#3a2a26', opacity = 0.5, base =
  * The canvas is transparent over the page backdrop, so the layer is written as premultiplied
  * light (alpha = brightness). It can only brighten what is behind it, on the page or in a still.
  */
-export function createGlassReflectionMaterial(intensity = 1.5, roughness = 0.04): MeshPhysicalMaterial {
+export function createGlassReflectionMaterial(intensity = 1.5, roughness = 0.04, clearcoat = 0): MeshPhysicalMaterial {
   const material = new MeshPhysicalMaterial({
     color: 0x000000,
     roughness,
     metalness: 0,
+    ior: 1.52,
+    clearcoat,
+    clearcoatRoughness: Math.min(roughness, 0.08),
     envMapIntensity: intensity,
     transparent: true,
     premultipliedAlpha: true,

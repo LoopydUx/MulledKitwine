@@ -51,7 +51,7 @@ export function StoryOverlay({ chapter }: { chapter: number }) {
           </h3>
           <p className="story-copy__body">{c.body}</p>
 
-          {/* Each name appears as its ingredient enters the pan; the full list is in the recipe section. */}
+          {/* Each name appears as its ingredient enters the pan. */}
           {i === 2 && (
             <ul className="story-ingredients" aria-label={t.recipe.fromKit}>
               {INGREDIENT_ORDER.map((key) => (

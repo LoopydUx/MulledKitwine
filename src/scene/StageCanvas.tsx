@@ -115,8 +115,10 @@ function Scene({ onReady, onUnavailable, capture, lowPower }: Omit<StageCanvasPr
     if (!w) return;
     const post = (query: string, body: Blob | string): Promise<Response> => fetch(`/__capture?${query}`, { method: 'POST', body });
     void (async () => {
+      const only = new URLSearchParams(window.location.search).get('shot');
+      const shots = only ? SHOTS.filter((shot) => shot.name === only) : SHOTS;
       const log: string[] = [];
-      for (const shot of SHOTS) {
+      for (const shot of shots) {
         if (cancelled) return;
         const s = shot.state();
         w.update(s, AMBIENT_STILL_TIME);

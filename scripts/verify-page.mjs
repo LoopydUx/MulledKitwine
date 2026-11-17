@@ -6,7 +6,7 @@
  *
  * What it covers: the scroll story forward and backward (same frames both ways), rapid
  * scrolling, chapter jumps, navigation, replay, resize, WebGL context loss, slow loading,
- * mobile menu focus handling, English/Arabic, reduced motion, no-WebGL, the recipe PDF,
+ * mobile menu focus handling, English/Arabic, reduced motion, no-WebGL,
  * image alt text, text contrast, horizontal overflow, and console/network errors.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -219,7 +219,7 @@ if (wants('desktop')) {
     // header navigation and skip link
     const header = await page.evaluate(() => Math.round(document.querySelector('.site-header').getBoundingClientRect().height));
     const nav = [];
-    for (const id of ['inside-the-box', 'recipe']) {
+    for (const id of ['inside-the-box']) {
       await clickEl(page, `.site-nav a[href="#${id}"]`);
       await sleep(1500);
       const top = await sectionTop(page, id);
@@ -233,7 +233,7 @@ if (wants('desktop')) {
     await sleep(1500);
     const orderTop = await sectionTop(page, 'order');
     if (orderTop < 0 || orderTop > header + 8) nav.push(`order lands at ${orderTop}px`);
-    check(g, 'header links reach The Ritual, Inside the Box, Recipe and the order section', nav.length === 0, nav.join('; '));
+    check(g, 'header links reach The Ritual, Inside the Box and the order section', nav.length === 0, nav.join('; '));
 
     await seek(page, 0.4);
     await clickEl(page, '.story-skip');
@@ -259,27 +259,6 @@ if (wants('desktop')) {
       return { how: !!how, cta: cta?.getAttribute('href'), price: !!document.querySelector('.order__price'), text: how?.innerText ?? '' };
     });
     check(g, 'with no order URL configured the CTA opens a "How to order" panel, with no price', orderInfo.how && orderInfo.cta === '#how-to-order' && !orderInfo.price);
-
-    // recipe PDF
-    const pdf = await page.evaluate(async () => {
-      const links = [...document.querySelectorAll('a[href$=".pdf"]')];
-      const href = links[0]?.getAttribute('href');
-      const res = await fetch(href);
-      const head = new TextDecoder().decode((await res.arrayBuffer()).slice(0, 5));
-      return {
-        href,
-        status: res.status,
-        type: res.headers.get('content-type'),
-        head,
-        count: links.length,
-        sameFile: links.every((a) => a.getAttribute('href') === href),
-        download: links.some((a) => a.hasAttribute('download')),
-        steps: document.querySelectorAll('.recipe-step').length,
-        warning: document.querySelector('.recipe-step__warning')?.textContent ?? '',
-      };
-    });
-    check(g, 'recipe PDF is served locally under a clean filename', pdf.status === 200 && /pdf/.test(pdf.type) && pdf.head === '%PDF-' && pdf.sameFile && pdf.download, `${pdf.href}, ${pdf.count} links`);
-    check(g, 'recipe is readable in HTML: five steps and the boil warning', pdf.steps === 5 && pdf.warning.length > 0, pdf.warning);
 
     // images
     await loadEverything(page);
@@ -432,15 +411,15 @@ if (wants('mobile')) {
     check(g, 'Escape closes the menu and returns focus to the menu button', !closed.open && closed.expanded === 'false' && closed.focusBack);
     await clickEl(page, '.site-header__menu');
     await sleep(400);
-    await clickEl(page, '#mobile-menu a[href="#recipe"]');
+    await clickEl(page, '#mobile-menu a[href="#inside-the-box"]');
     await sleep(1600);
-    const recipeTop = await sectionTop(page, 'recipe');
+    const insideTop = await sectionTop(page, 'inside-the-box');
     const stillOpen = await page.evaluate(() => document.getElementById('mobile-menu').open);
-    check(g, 'a menu link closes the menu and scrolls to its section', !stillOpen && recipeTop >= 0 && recipeTop <= 80, `recipe at ${recipeTop}px`);
+    check(g, 'a menu link closes the menu and scrolls to its section', !stillOpen && insideTop >= 0 && insideTop <= 80, `inside the box at ${insideTop}px`);
 
     await loadEverything(page);
     check(g, 'no horizontal overflow in the lower sections', await noOverflow(page));
-    for (const [id, extra] of [['inside-the-box', 0], ['inside-the-box', 2300], ['recipe', 0], ['recipe', 1500], ['order', 0], ['order', 900]]) {
+    for (const [id, extra] of [['inside-the-box', 0], ['inside-the-box', 2300], ['order', 0], ['order', 900]]) {
       await page.evaluate((id, extra) => { document.getElementById(id).scrollIntoView(); window.scrollBy(0, extra); }, id, extra);
       await sleep(900);
       await snap(page, `mobile-${id}-${extra}`);
@@ -467,7 +446,6 @@ if (wants('arabic')) {
         h1: document.querySelector('h1').textContent,
         wordmarks: [...document.querySelectorAll('.wordmark')].every((w) => w.dir === 'ltr' && /CANTINA CANA/i.test(w.textContent)),
         canvasMirrored: getComputedStyle(document.querySelector('.stage canvas')).transform !== 'none',
-        steps: [...document.querySelectorAll('.recipe-step')].map((li) => li.innerText),
         chapters: [...document.querySelectorAll('.story-copy__title')].map((h) => h.textContent),
         kit: [...document.querySelectorAll('.kit-item__name')].map((h) => h.textContent),
         untranslated: [...document.querySelectorAll('main h1, main h2, main h3, main h4, main p, main li, main a, main button, footer a, footer p')]
@@ -479,15 +457,15 @@ if (wants('arabic')) {
       check(g, `${view}: brand wordmark stays left-to-right and the 3D artwork is not mirrored`, info.wordmarks && !info.canvasMirrored);
       check(
         g,
-        `${view}: chapters, kit and the five recipe steps are in Arabic`,
-        info.steps.length === 5 && info.steps.every((t) => arabic.test(t)) && info.chapters.length === 6 && info.chapters.every((t) => arabic.test(t)) && info.kit.every((t) => arabic.test(t)),
+        `${view}: chapters and kit are in Arabic`,
+        info.chapters.length === 6 && info.chapters.every((t) => arabic.test(t)) && info.kit.every((t) => arabic.test(t)),
       );
       check(g, `${view}: no English-only text left in the Arabic page`, info.untranslated.length === 0, [...new Set(info.untranslated)].slice(0, 8).join(' | '));
       await snap(page, `ar-${view}-hero`);
       await scrub(g, page, `ar-${view}`, [0.0775, 0.262, 0.4365, 0.607, 0.7475, 0.9285, 1]);
       await loadEverything(page);
       check(g, `${view}: no horizontal overflow in Arabic`, await noOverflow(page));
-      for (const id of ['inside-the-box', 'recipe', 'order']) {
+      for (const id of ['inside-the-box', 'order']) {
         await page.evaluate((id) => document.getElementById(id).scrollIntoView(), id);
         await sleep(900);
         await snap(page, `ar-${view}-${id}`);
@@ -598,7 +576,6 @@ if (wants('reduced')) {
         }),
         facts: [...document.querySelectorAll('.static-chapter__facts')].map((p) => p.innerText),
         finale: document.querySelector('.static-finale .story-finale__line')?.textContent,
-        steps: document.querySelectorAll('.recipe-step').length,
         notice: document.querySelector('.static-story__notice')?.innerText,
         smooth: getComputedStyle(document.documentElement).scrollBehavior,
         hidden: [...document.querySelectorAll('.reveal')].filter((el) => +getComputedStyle(el).opacity < 0.99).length,
@@ -613,7 +590,7 @@ if (wants('reduced')) {
         info.chapters.map((c) => c.title).join(' / '),
       );
       check(g, `${view}: heat, "do not boil", heat-off and rest facts are stated in text`, info.facts.length === 2 && /15/.test(info.facts[0]) && /8/.test(info.facts[1]), info.facts.join(' / ').replace(/\n/g, ' '));
-      check(g, `${view}: full recipe and finale line are present`, info.steps === 5 && !!info.finale);
+      check(g, `${view}: finale line is present`, !!info.finale);
       check(g, `${view}: no smooth scrolling, no running animations, nothing left hidden`, info.smooth === 'auto' && info.running === 0 && info.hidden === 0, `scroll-behavior ${info.smooth}, ${info.running} running, ${info.hidden} hidden`);
       for (const n of [3, 6]) {
         await clickEl(page, `.site-nav a[href="#ritual"]`);

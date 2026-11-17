@@ -193,15 +193,26 @@ function orangeSlice(): HTMLCanvasElement {
   return c;
 }
 
+/** Even cinnamon bark. Top half is the outer quill; bottom half is the paler inner sheet. */
 function cinnamonBark(): HTMLCanvasElement {
-  const [c, ctx] = canvas(256, 256);
-  ctx.fillStyle = '#b27a47';
-  ctx.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 140; i++) {
-    const y = seeded(i) * 256;
-    const tone = seeded(i + 40);
-    ctx.fillStyle = tone > 0.5 ? `rgba(92, 50, 22, ${0.1 + tone * 0.16})` : `rgba(226, 176, 120, ${0.08 + tone * 0.18})`;
-    ctx.fillRect(seeded(i + 90) * 80 - 40, y, 180 + seeded(i + 7) * 120, 1 + seeded(i + 3) * 2.5);
+  const [c, ctx] = canvas(512, 256);
+  const w = c.width;
+  const h = c.height;
+  // flipY is off, so the top half (v 0–0.5) is the outer bark. Keep it even: a gradient across v wraps into a stripe.
+  ctx.fillStyle = '#b86a3c';
+  ctx.fillRect(0, 0, w, h * 0.5);
+  ctx.fillStyle = '#d7ae7c';
+  ctx.fillRect(0, h * 0.5, w, h * 0.5);
+  // a few faint fibres, not cracks
+  for (let i = 0; i < 28; i++) {
+    const y = seeded(i + 2) * h * 0.48;
+    const tone = seeded(i + 11);
+    ctx.strokeStyle = tone > 0.5 ? `rgba(120, 62, 28, ${0.08 + tone * 0.08})` : `rgba(230, 186, 130, ${0.1 + tone * 0.08})`;
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(w, y + (seeded(i + 4) - 0.5) * 3);
+    ctx.stroke();
   }
   return c;
 }
@@ -283,8 +294,8 @@ export async function loadSceneTextures(anisotropy: number): Promise<SceneTextur
   const sieve = toTexture(sieveMesh(), anisotropy);
   sieve.wrapS = sieve.wrapT = RepeatWrapping;
   sieve.repeat.set(56, 20);
-  const bark = toTexture(cinnamonBark(), 1);
-  bark.wrapS = bark.wrapT = RepeatWrapping;
+  const bark = toTexture(cinnamonBark(), anisotropy);
+  bark.flipY = false;
   return {
     packFront: toTexture(packFront(front), anisotropy),
     packRight: toTexture(packRight(right), anisotropy),

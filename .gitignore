@@ -3,3 +3,4 @@ dist
 *.local
 .vite
 .verify
+__pycache__/

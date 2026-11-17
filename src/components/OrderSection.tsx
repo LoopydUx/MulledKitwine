@@ -2,7 +2,7 @@ import { assets, brand, order } from '../config/product';
 import { ANCHORS } from '../config/story';
 import { useReveal } from '../hooks/useViewport';
 import { useLanguage } from '../i18n/LanguageContext';
-import { Ornament, SatinRibbon } from './bits';
+import { SatinRibbon } from './bits';
 
 /**
  * Closing section. With `order.url` configured it links to the real checkout;
@@ -29,27 +29,13 @@ export function OrderSection() {
           <h2 id="order-title" className="order__title">
             {o.title}
           </h2>
-          <Ornament />
-          <p className="order__body">{o.body}</p>
-
-          <h3 className="order__subhead">{o.contentsTitle}</h3>
-          <ul className="order__contents">
-            {o.contents.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
+          <p className="order__line">{o.body}</p>
 
           {order.price && <p className="order__price">{l(order.price)}</p>}
 
-          {order.url ? (
-            <a className="btn btn--gold" href={order.url}>
-              {o.ctaOnline}
-            </a>
-          ) : (
-            <a className="btn btn--gold" href={`#${ANCHORS.howToOrder}`}>
-              {o.cta}
-            </a>
-          )}
+          <a className="btn btn--gold" href={order.url ?? `#${ANCHORS.howToOrder}`}>
+            {o.cta}
+          </a>
         </div>
       </div>
 

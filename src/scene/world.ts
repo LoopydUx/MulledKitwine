@@ -28,6 +28,7 @@ import {
   buildBooklet,
   buildBottle,
   buildBox,
+  buildCinnamonTie,
   buildCorkscrew,
   buildGlass,
   buildHob,
@@ -82,6 +83,7 @@ export class StoryWorld {
   private readonly screwCork: Mesh;
   private readonly orangeBag: ReturnType<typeof buildBag>;
   private readonly cinnamonBag: ReturnType<typeof buildBag>;
+  private readonly cinnamonTie: Group;
   private readonly spices: Object3D[];
   private readonly mini: Group;
   private readonly miniLiquid: Mesh;
@@ -137,6 +139,8 @@ export class StoryWorld {
       o.visible = false;
       return o;
     });
+    this.cinnamonTie = add(buildCinnamonTie('x', true));
+    this.cinnamonTie.visible = false;
     const mini = buildMiniBottle(this.miniPlane);
     this.mini = add(mini.group);
     this.miniLiquid = mini.group.children[0] as Mesh;
@@ -266,6 +270,20 @@ export class StoryWorld {
       });
     }
     if (this.cinnamonBag.twine) this.cinnamonBag.twine.visible = s.bagItems[3].visible && s.bagItems[3].slide < 0.05;
+    const cin = SPICES.map((d, i) => (d.kind === 'cinnamon' ? i : -1)).filter((i) => i >= 0);
+    const [i0, i1] = cin;
+    const p0 = s.spices[i0];
+    const p1 = s.spices[i1];
+    const resting = (i: number, p: StoryState['spices'][number]): boolean => {
+      const home = SPICES[i].kit.pos;
+      return Math.abs(p.pos[0] - home[0]) < 0.002 && Math.abs(p.pos[1] - home[1]) < 0.002 && Math.abs(p.pos[2] - home[2]) < 0.002;
+    };
+    const tied = props && p0.visible && p1.visible && resting(i0, p0) && resting(i1, p1);
+    this.cinnamonTie.visible = tied;
+    if (tied) {
+      this.cinnamonTie.position.set((p0.pos[0] + p1.pos[0]) / 2, (p0.pos[1] + p1.pos[1]) / 2, (p0.pos[2] + p1.pos[2]) / 2);
+      this.cinnamonTie.rotation.set(0, p0.rot[1], 0);
+    }
 
     /* loose spices */
     this.spices.forEach((o, i) => {
@@ -315,11 +333,13 @@ export class StoryWorld {
     place(this.sieve, s.sieve);
     this.glass.visible = s.glassVisible;
     place(this.glass, s.glass);
+    const glassScale = s.glassScale;
+    this.glass.scale.setScalar(glassScale);
     const level = lerp(DIM.glass.bowlBottom, DIM.glass.fillTop, s.glassFill);
     const hasWine = s.glassFill > 0.01;
     this.glassWine.visible = hasWine;
     this.glassSurface.visible = hasWine;
-    this.glassPlane.constant = s.glass.pos[1] + level;
+    this.glassPlane.constant = s.glass.pos[1] + level * glassScale;
     this.glassSurface.position.y = level;
     this.glassSurface.scale.setScalar(Math.max(glassInnerRadius(level) - 0.008, 0.01));
     this.glassLiquid.uniforms.uTime.value = time;
@@ -334,7 +354,16 @@ export class StoryWorld {
     const landing = wineLanding ?? amberLanding;
     if (landing) (pu.uRippleAt.value as { set: (x: number, y: number) => void }).set(landing.x, landing.z);
     this.panSteam.update(time, st ? s.panSteam : 0, s.pan.pos[0], s.panSurfaceY, s.pan.pos[2], 0.5, 1.75, 1);
-    this.glassSteam.update(time, s.glassVisible ? s.glassSteam : 0, s.glass.pos[0], s.glass.pos[1] + level, s.glass.pos[2], 0.14, 1.25, 0.62);
+    this.glassSteam.update(
+      time,
+      s.glassVisible ? s.glassSteam : 0,
+      s.glass.pos[0],
+      s.glass.pos[1] + level * glassScale,
+      s.glass.pos[2],
+      0.14 * glassScale,
+      1.25 * glassScale,
+      0.62 * glassScale,
+    );
   }
 
   /**

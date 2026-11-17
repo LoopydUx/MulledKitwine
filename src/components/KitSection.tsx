@@ -20,7 +20,6 @@ export function KitSection() {
   const headRef = useReveal<HTMLElement>();
   const figureRef = useReveal<HTMLElement>();
   const listRef = useReveal<HTMLOListElement>();
-  const noteRef = useReveal<HTMLElement>();
   const numberOf = (id: string): number => kitItems.findIndex((item) => item.id === id) + 1;
 
   return (
@@ -84,11 +83,6 @@ export function KitSection() {
           </li>
         ))}
       </ol>
-
-      <aside className="kit__kitchen reveal" ref={noteRef} aria-labelledby="kit-kitchen-title">
-        <h3 id="kit-kitchen-title">{t.kit.kitchenTitle}</h3>
-        <p>{t.kit.kitchenBody}</p>
-      </aside>
     </section>
   );
 }

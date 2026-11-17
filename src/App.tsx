@@ -4,7 +4,6 @@ import { Header } from './components/Header';
 import { Journey } from './components/Journey';
 import { KitSection } from './components/KitSection';
 import { OrderSection } from './components/OrderSection';
-import { RecipeSection } from './components/RecipeSection';
 import { StaticStory } from './components/StaticStory';
 import { ANCHORS } from './config/story';
 import { useStageMode, type StageMode } from './hooks/useStageMode';
@@ -31,7 +30,7 @@ function CaptureStage() {
 function Page() {
   const { mode, reason, canAnimate, choose } = useStageMode();
 
-  // Content is rendered by script, so honour a deep link (#recipe, #chapter-3, ...) once it exists.
+  // Content is rendered by script, so honour a deep link (#chapter-3, ...) once it exists.
   useEffect(() => {
     const id = decodeURIComponent(window.location.hash.slice(1));
     if (!id) return;
@@ -54,7 +53,6 @@ function Page() {
       <main id="main">
         {mode === 'animated' ? <Journey /> : <StaticStory reason={reason} canAnimate={canAnimate} onPlay={() => onChoose('animated')} />}
         <KitSection />
-        <RecipeSection />
         <OrderSection />
       </main>
       <Footer mode={mode} canAnimate={canAnimate} onChoose={onChoose} />
