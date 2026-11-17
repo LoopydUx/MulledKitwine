@@ -1,0 +1,64 @@
+/*
+ * Design tokens. Colours are sampled from the supplied packaging and booklet:
+ * deep burgundy board, warm ivory pages, antique gold print.
+ */
+:root {
+  /* Stage backdrops. Keep in sync with STAGE_COLORS in src/scene/world.ts. */
+  --stage-ivory: rgb(245 236 221);
+  --stage-warm: rgb(232 213 184);
+  --stage-burgundy: rgb(72 21 29);
+
+  --burgundy: #48151d;
+  --burgundy-deep: #2c070e;
+  --burgundy-soft: #6b2230;
+  --wine: #5b1a26;
+  --ivory: #f5ecdd;
+  --ivory-soft: #efe3cf;
+  --paper: #fbf6ec;
+  --gold: #c9a465;
+  --gold-bright: #e0c48c;
+  --gold-ink: #745722;
+  --ink: #2e1a1c;
+  --ink-soft: #5e4a47;
+  --line: rgb(91 26 38 / 0.18);
+
+  --font-display: 'Cormorant Garamond', 'Noto Naskh Arabic', 'Times New Roman', serif;
+  --font-ui: 'Jost', 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --tracking: 0.16em;
+  --tracking-wide: 0.3em;
+  --caps: uppercase;
+
+  --header-h: 64px;
+  --gutter: clamp(20px, 5vw, 72px);
+  --radius: 4px;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  /* contextual colours, overridden on dark surfaces */
+  --fg: var(--ink);
+  --fg-soft: var(--ink-soft);
+  --accent: var(--wine);
+  --focus: var(--wine);
+}
+
+/* Arabic: joined scripts must not be letter-spaced or upper-cased */
+:root:lang(ar) {
+  --font-display: 'Noto Naskh Arabic', 'Cormorant Garamond', serif;
+  --font-ui: 'Tajawal', 'Jost', system-ui, sans-serif;
+  --tracking: 0;
+  --tracking-wide: 0;
+  --caps: none;
+}
+
+.on-dark,
+.site-header,
+.mobile-menu,
+.hero,
+.static-hero,
+.order,
+.site-footer,
+.stage[data-tone='dark'] {
+  --fg: var(--ivory);
+  --fg-soft: rgb(245 236 221 / 0.78);
+  --accent: var(--gold-bright);
+  --focus: var(--gold-bright);
+}
