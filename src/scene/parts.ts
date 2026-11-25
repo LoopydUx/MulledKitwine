@@ -333,21 +333,21 @@ function gripGeometry(): BufferGeometry {
   const positions: number[] = [];
   const indices: number[] = [];
   const sample = (t: number): { x: number; y: number; z: number; hy: number; hz: number } => {
-    const x = 0.045 + t * 0.64;
-    const belly = Math.sin(t * Math.PI) ** 0.85;
-    // gentle banana, butt lifting, kept shallow so it still sits in the box
-    const y = -0.034 * Math.sin(t * Math.PI * 0.95) + t ** 3 * 0.04;
-    const z = 0.066;
-    const neck = t < 0.12 ? 0.82 + 0.18 * (t / 0.12) : 1;
+    const x = 0.05 + t * 0.62;
+    const belly = Math.sin(t * Math.PI) ** 0.8;
+    // sits below the folded spiral; the bow stays shallow so the grip clears the box wall
+    const y = -0.05 - 0.016 * Math.sin(t * Math.PI) + t ** 3 * 0.028;
+    const z = 0.074;
+    const neck = t < 0.14 ? 0.72 + 0.28 * (t / 0.14) : 1;
     let cap = 1;
-    if (t < 0.07) cap = Math.sin((t / 0.07) * HALF);
+    if (t < 0.08) cap = Math.sin((t / 0.08) * HALF);
     else if (t > 0.9) cap = Math.sin(((1 - t) / 0.1) * HALF);
     return {
       x,
       y,
       z,
-      hy: (0.05 + 0.016 * belly) * neck * cap,
-      hz: (0.046 + 0.012 * belly) * neck * cap,
+      hy: (0.036 + 0.014 * belly) * neck * cap,
+      hz: (0.032 + 0.01 * belly) * neck * cap,
     };
   };
   for (let i = 0; i <= along; i++) {
@@ -371,7 +371,7 @@ function gripGeometry(): BufferGeometry {
       let y = curr.y + ny * sy * curr.hy;
       let z = curr.z + sz * curr.hz;
       // tuck a round channel where the folded worm lies, on the face toward the hinge axis
-      const clearance = 0.043;
+      const clearance = 0.042;
       if (z < curr.z) {
         const dist = Math.hypot(y, z);
         if (dist < clearance && dist > 1e-4) {
@@ -444,40 +444,40 @@ function gripGeometry(): BufferGeometry {
 }
 
 function drawLever(shape: Shape): void {
-  const length = 0.4;
-  const y0 = 0.048;
-  shape.moveTo(0, y0);
-  for (let i = 1; i <= 24; i++) {
-    const t = i / 24;
-    shape.lineTo(t * length, y0 + 0.01 + Math.sin(t * Math.PI) * 0.07);
+  const length = 0.42;
+  const y0 = 0.05;
+  shape.moveTo(0.02, y0 + 0.01);
+  for (let i = 1; i <= 26; i++) {
+    const t = i / 26;
+    shape.lineTo(0.02 + t * length, y0 + 0.012 + Math.sin(t * Math.PI) * 0.046);
   }
   // lip notch: the step that seats on the bottle mouth
-  shape.lineTo(length - 0.014, y0 + 0.006);
-  shape.lineTo(length - 0.082, y0 + 0.002);
-  shape.lineTo(length - 0.09, y0 + 0.028);
-  for (let i = 18; i >= 0; i--) {
-    const t = i / 24;
-    shape.lineTo(t * (length - 0.09), y0 + Math.sin(t * Math.PI) * 0.026);
+  shape.lineTo(0.02 + length - 0.02, y0 + 0.006);
+  shape.lineTo(0.02 + length - 0.08, y0 + 0.002);
+  shape.lineTo(0.02 + length - 0.09, y0 + 0.022);
+  for (let i = 20; i >= 0; i--) {
+    const t = i / 26;
+    shape.lineTo(0.02 + t * (length - 0.1), y0 + Math.sin(t * Math.PI) * 0.016);
   }
   shape.closePath();
 }
 
 function drawOpener(shape: Shape): void {
-  const cx = -0.108;
-  const cy = 0.02;
-  const a0 = 0.45;
-  const a1 = 2.35;
+  const cx = -0.12;
+  const cy = 0.028;
+  const a0 = 0.2;
+  const a1 = 2.55;
   const at = (radius: number, angle: number): [number, number] => [cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius];
-  const start = at(0.072, a0);
+  const start = at(0.086, a0);
   shape.moveTo(start[0], start[1]);
-  for (let i = 1; i <= 20; i++) {
-    const p = at(0.072, a0 + ((a1 - a0) * i) / 20);
+  for (let i = 1; i <= 22; i++) {
+    const p = at(0.086, a0 + ((a1 - a0) * i) / 22);
     shape.lineTo(p[0], p[1]);
   }
-  const tip = at(0.072, a1);
-  shape.lineTo(tip[0] + 0.01, tip[1] - 0.018);
-  for (let i = 20; i >= 0; i--) {
-    const p = at(0.046, a0 + ((a1 - a0) * i) / 20);
+  const tip = at(0.086, a1);
+  shape.lineTo(tip[0] + 0.008, tip[1] - 0.022);
+  for (let i = 22; i >= 0; i--) {
+    const p = at(0.056, a0 + ((a1 - a0) * i) / 22);
     shape.lineTo(p[0], p[1]);
   }
   shape.closePath();
@@ -493,23 +493,23 @@ export function buildCorkscrew(): { group: Group; worm: Group; cork: Mesh } {
     clearcoatRoughness: 0.24,
     envMapIntensity: 0.95,
   });
-  const metal = new MeshStandardMaterial({ color: '#e8e4dc', metalness: 1, roughness: 0.16, envMapIntensity: 1.45 });
+  const metal = new MeshStandardMaterial({ color: '#f2efe8', metalness: 1, roughness: 0.12, envMapIntensity: 1.55 });
 
   group.add(mesh(gripGeometry(), grip));
-  group.add(mesh(stamped(drawLever, 0.016), metal));
-  group.add(mesh(stamped(drawOpener, 0.014), metal));
+  group.add(mesh(stamped(drawLever, 0.022), metal));
+  group.add(mesh(stamped(drawOpener, 0.018), metal));
 
-  const tang = mesh(new BoxGeometry(0.06, 0.024, 0.014), metal);
-  tang.position.set(-0.042, 0.026, 0);
+  const tang = mesh(new BoxGeometry(0.07, 0.028, 0.016), metal);
+  tang.position.set(-0.048, 0.034, 0);
   group.add(tang);
 
-  const pin = mesh(new CylinderGeometry(0.016, 0.016, 0.064, 18), metal);
+  const pin = mesh(new CylinderGeometry(0.018, 0.018, 0.07, 18), metal);
   pin.rotation.x = HALF;
   group.add(pin);
   for (const side of [1, -1]) {
-    const rivet = mesh(new CylinderGeometry(0.024, 0.024, 0.007, 18), metal);
+    const rivet = mesh(new CylinderGeometry(0.028, 0.028, 0.008, 18), metal);
     rivet.rotation.x = HALF;
-    rivet.position.z = side * 0.034;
+    rivet.position.z = side * 0.036;
     group.add(rivet);
   }
 

@@ -101,9 +101,9 @@ function Scene({ onReady, onUnavailable, capture, lowPower }: Omit<StageCanvasPr
   useFrame(({ clock }) => {
     const w = world.current;
     if (!w || capture) return;
-    const s = computeState(storyStore.intro, storyStore.p);
+    const s = computeState(storyStore.intro, storyStore.p, storyStore.gift);
     w.update(s, FREEZE_AMBIENT ? AMBIENT_STILL_TIME : clock.elapsedTime);
-    w.frame(camera, s.camera, s.bg, stageView(size.width, size.height, storyStore.intro, storyStore.p, storyStore.rtl), scene.fog as Fog);
+    w.frame(camera, s.camera, s.bg, stageView(size.width, size.height, storyStore.intro, storyStore.p), scene.fog as Fog);
     // report readiness once real frames have reached the screen
     if (frames.current < 3 && ++frames.current === 3) callbacks.current.onReady();
   });

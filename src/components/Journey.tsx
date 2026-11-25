@@ -3,7 +3,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { lazy, Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { FREEZE_AMBIENT } from '../config/debug';
 import { assets } from '../config/product';
-import { ANCHORS, buildScrollMap, HOLD_VH, INTRO_VH } from '../config/story';
+import { ANCHORS, buildScrollMap, GIFT_VH, HOLD_VH, INTRO_VH } from '../config/story';
 import { isLowPowerDevice, usePortraitLayout } from '../hooks/useViewport';
 import { useLanguage } from '../i18n/LanguageContext';
 import { backdropAt, CHAPTER_RANGES, chapterAt, T } from '../scene/choreography';
@@ -19,18 +19,18 @@ ScrollTrigger.config({ ignoreMobileResize: true });
 const StageCanvas = lazy(() => import('../scene/StageCanvas'));
 
 type StageStatus = 'loading' | 'ready' | 'unavailable';
-type Phase = 'hero' | 'story' | 'finale';
+type Phase = 'gift' | 'hero' | 'story' | 'finale';
 
 const FADE = 13; // vh of scroll used by a copy block to fade in
 
 /**
- * Hero + six chapters as one continuous, scroll-controlled stage.
+ * Gift opening + hero + six chapters as one continuous, scroll-controlled stage.
  * The stage is `position: sticky`, so scrolling stays native; GSAP ScrollTrigger
  * only maps scroll position to a timeline that drives the copy and the progress
  * value read by the 3D scene.
  */
 export function Journey() {
-  const { t, rtl } = useLanguage();
+  const { t } = useLanguage();
   const portrait = usePortraitLayout();
   const map = useMemo(() => buildScrollMap(portrait), [portrait]);
   const lowPower = useMemo(() => isLowPowerDevice(), []);
@@ -40,11 +40,7 @@ export function Journey() {
   const [onScreen, setOnScreen] = useState(true);
   const [mountCanvas, setMountCanvas] = useState(false);
   const [chapter, setChapter] = useState(0);
-  const [phase, setPhase] = useState<Phase>('hero');
-
-  useEffect(() => {
-    storyStore.rtl = rtl;
-  }, [rtl]);
+  const [phase, setPhase] = useState<Phase>('gift');
 
   // Let the hero paint first, then bring in the heavier scene.
   useEffect(() => {
@@ -65,17 +61,25 @@ export function Journey() {
     const journey = journeyRef.current;
     const stage = stageRef.current;
     if (!journey || !stage) return;
-    const live = { chapter: -1, phase: '' as Phase | '', tone: '', burgundy: '', warm: '' };
+    const live = { chapter: -1, phase: '' as Phase | '', tone: '', burgundy: '', warm: '', gift: '' };
 
     const ctx = gsap.context(() => {
-      const proxy = { intro: 0, p: 0 };
+      const proxy = { gift: 0, intro: 0, p: 0 };
 
       const sync = (): void => {
+        storyStore.gift = proxy.gift;
         storyStore.intro = proxy.intro;
         storyStore.p = proxy.p;
         if (FREEZE_AMBIENT) {
           stage.dataset.p = proxy.p.toFixed(4);
           stage.dataset.intro = proxy.intro.toFixed(4);
+          stage.dataset.gift = proxy.gift.toFixed(4);
+        }
+        const giftStr = proxy.gift.toFixed(3);
+        if (giftStr !== live.gift) {
+          live.gift = giftStr;
+          journey.style.setProperty('--gift', giftStr);
+          stage.style.setProperty('--gift', giftStr);
         }
         const bg = backdropAt(proxy.p);
         const burgundy = bg.burgundy.toFixed(3);
@@ -98,7 +102,8 @@ export function Journey() {
           live.chapter = c;
           setChapter(c);
         }
-        const ph: Phase = proxy.intro < 0.5 ? 'hero' : proxy.p > 0.972 ? 'finale' : 'story';
+        const ph: Phase =
+          proxy.gift < 0.55 ? 'gift' : proxy.intro < 0.5 ? 'hero' : proxy.p > 0.972 ? 'finale' : 'story';
         if (ph !== live.phase) {
           live.phase = ph;
           setPhase(ph);
@@ -108,12 +113,16 @@ export function Journey() {
       const tl = gsap.timeline({
         defaults: { ease: 'none' },
         onUpdate: sync,
-        scrollTrigger: { trigger: journey, start: 'top top', end: 'bottom bottom', scrub: 0.6 },
+        scrollTrigger: { trigger: journey, start: 'top top', end: 'bottom bottom', scrub: 1.4 },
       });
 
-      // one normalized progress value: intro, then the six chapters, then a hold
-      tl.to(proxy, { intro: 1, duration: INTRO_VH }, 0);
-      let at = INTRO_VH;
+      // Gift copy hold, then scroll into the preparation hero, then existing intro + chapters.
+      const giftHold = GIFT_VH * 0.42;
+      const giftExit = GIFT_VH - giftHold;
+      tl.to(proxy, { gift: 0, duration: giftHold }, 0);
+      tl.to(proxy, { gift: 1, duration: giftExit }, giftHold);
+      tl.to(proxy, { intro: 1, duration: INTRO_VH }, GIFT_VH);
+      let at = map.storyStart;
       CHAPTER_RANGES.forEach(([, end], i) => {
         tl.to(proxy, { p: end, duration: map.lengths[i] }, at);
         at += map.lengths[i];
@@ -129,9 +138,16 @@ export function Journey() {
       };
       const q = (selector: string): Element | null => stage.querySelector(selector);
 
-      // chapter copy
+      // Gift copy: visible through the hold, then out before chapter one arrives.
+      const giftCopy = q('.story-gift');
+      if (giftCopy) {
+        gsap.set(giftCopy, { opacity: 1, y: 0 });
+        fadeOut(giftCopy, giftHold + giftExit * 0.72, FADE);
+      }
+
+      // chapter copy (after gift + intro)
       stage.querySelectorAll('.story-copy').forEach((el, i) => {
-        fadeIn(el, i === 0 ? INTRO_VH * 0.6 : map.timeOf(T.copy[i][0]));
+        fadeIn(el, i === 0 ? GIFT_VH + INTRO_VH * 0.6 : map.timeOf(T.copy[i][0]));
         fadeOut(el, map.timeOf(T.copy[i][1]));
       });
       // ingredient names appear briefly as each one enters the pan
@@ -151,7 +167,7 @@ export function Journey() {
       ring('[data-ring="rest"]', T.rest[0], T.rest[1]);
       // finale line and persistent chrome
       fadeIn(q('.story-finale'), map.timeOf(T.finaleCopy));
-      fadeIn(q('.story-chrome'), INTRO_VH * 0.55, 12, 0, 'autoAlpha');
+      fadeIn(q('.story-chrome'), GIFT_VH + INTRO_VH * 0.55, 12, 0, 'autoAlpha');
 
       sync();
     }, stage);
@@ -159,7 +175,7 @@ export function Journey() {
     return () => ctx.revert();
   }, [map]);
 
-  // Layout height changes (fonts, language, images) must not leave stale trigger positions.
+  // Layout height changes (fonts, images) must not leave stale trigger positions.
   useEffect(() => {
     ScrollTrigger.refresh();
     if (!document.fonts) return;
@@ -170,7 +186,7 @@ export function Journey() {
     return () => {
       alive = false;
     };
-  }, [map, rtl]);
+  }, [map]);
 
   // Keep the still mounted briefly so it can cross-fade into the live scene (UI state, not story state).
   const [stillGone, setStillGone] = useState(false);
@@ -184,11 +200,11 @@ export function Journey() {
   }, [status]);
 
   const showStill = !stillGone;
-  const stillSrc = phase === 'hero' ? assets.stills.hero : phase === 'finale' ? assets.stills.finale : assets.stills.chapters[chapter];
+  const stillSrc = phase === 'gift' || phase === 'hero' ? assets.stills.hero : phase === 'finale' ? assets.stills.finale : assets.stills.chapters[chapter];
 
   return (
     <div className="journey" ref={journeyRef} style={{ '--track': map.total } as CSSProperties}>
-      <div className="stage" ref={stageRef} data-tone="dark" data-status={status} data-phase={phase}>
+      <div className="stage" ref={stageRef} data-tone="dark" data-status={status} data-phase={phase} style={{ '--gift': 0 } as CSSProperties}>
         <div className="stage__bg stage__bg--ivory" />
         <div className="stage__bg stage__bg--warm" />
         <div className="stage__bg stage__bg--burgundy">
@@ -198,11 +214,11 @@ export function Journey() {
         {showStill && (
           <img
             key={stillSrc}
-            className={`stage__still stage__still--${phase === 'hero' ? 'hero' : 'chapter'}`}
+            className={`stage__still stage__still--${phase === 'gift' || phase === 'hero' ? 'hero' : 'chapter'}`}
             src={stillSrc}
             alt=""
             decoding="async"
-            fetchPriority={phase === 'hero' ? 'high' : 'auto'}
+            fetchPriority={phase === 'gift' || phase === 'hero' ? 'high' : 'auto'}
           />
         )}
         {mountCanvas && status !== 'unavailable' && (
@@ -224,13 +240,13 @@ export function Journey() {
 
       {/* Real anchor targets along the pinned track, used by navigation and the chapter indicator. */}
       <div className="track" aria-hidden="true">
-        <span id={ANCHORS.ritual} className="track__anchor" style={{ '--at': INTRO_VH + 2 } as CSSProperties} />
+        <span id={ANCHORS.ritual} className="track__anchor" style={{ '--at': map.storyStart + 2 } as CSSProperties} />
         {t.story.chapters.map((_, i) => (
           <span
             key={i}
             id={ANCHORS.chapter(i + 1)}
             className="track__anchor"
-            style={{ '--at': i === 0 ? INTRO_VH + 2 : map.timeOf(T.copy[i][0]) + FADE } as CSSProperties}
+            style={{ '--at': i === 0 ? map.storyStart + 2 : map.timeOf(T.copy[i][0]) + FADE } as CSSProperties}
           />
         ))}
       </div>

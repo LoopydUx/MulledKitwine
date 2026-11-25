@@ -75,6 +75,10 @@ export async function stageReady(page, timeout = 30000) {
 }
 
 /** Scroll position (px) at which the story is at progress p. Mirrors src/config/story.ts. */
+/** Must stay in sync with GIFT_VH / INTRO_VH in src/config/story.ts. */
+const GIFT_VH = 72;
+const INTRO_VH = 80;
+
 export function scrollForProgress(p, width, height) {
   const portrait = width < 900 || width / height < 1.05;
   const base = portrait ? 98 : 124;
@@ -87,7 +91,7 @@ export function scrollForProgress(p, width, height) {
     [0.67, 0.82],
     [0.82, 1],
   ];
-  let t = 80;
+  let t = GIFT_VH + INTRO_VH;
   for (let i = 0; i < 6; i++) {
     const [a, b] = ranges[i];
     const len = Math.round(weights[i] * base);
@@ -100,15 +104,22 @@ export function scrollForProgress(p, width, height) {
   return (t * height) / 100;
 }
 
-/** Inverse of scrollForProgress: the { intro, p } the story must show at scroll position y. */
+/** Inverse of scrollForProgress: the { gift, intro, p } the story must show at scroll position y. */
 export function progressForScroll(y, width, height) {
   const portrait = width < 900 || width / height < 1.05;
   const base = portrait ? 98 : 124;
   const weights = [1.45, 1.05, 1.1, 1.0, 1.05, 1.35];
   const ends = [0.18, 0.35, 0.5, 0.67, 0.82, 1];
   const t = (y * 100) / height;
-  const intro = Math.min(1, Math.max(0, t / 80));
-  let rest = t - 80;
+  const giftHold = GIFT_VH * 0.42;
+  const giftExit = GIFT_VH - giftHold;
+  let gift = 0;
+  if (t <= giftHold) gift = 0;
+  else if (t >= GIFT_VH) gift = 1;
+  else gift = (t - giftHold) / giftExit;
+  const afterGift = t - GIFT_VH;
+  const intro = Math.min(1, Math.max(0, afterGift / INTRO_VH));
+  let rest = afterGift - INTRO_VH;
   let p = 0;
   for (let i = 0; i < 6 && rest > 0; i++) {
     const len = Math.round(weights[i] * base);
@@ -116,7 +127,7 @@ export function progressForScroll(y, width, height) {
     p = start + (Math.min(rest, len) / len) * (ends[i] - start);
     rest -= len;
   }
-  return { intro, p };
+  return { gift, intro, p };
 }
 
 /** Jumps to story progress p and lets the scrubbed timeline settle. */

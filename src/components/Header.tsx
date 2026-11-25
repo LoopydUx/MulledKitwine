@@ -4,18 +4,9 @@ import { ANCHORS } from '../config/story';
 import { useLanguage } from '../i18n/LanguageContext';
 import { Wordmark } from './bits';
 
-function LanguageToggle({ className = '' }: { className?: string }) {
-  const { t, lang, toggle } = useLanguage();
-  return (
-    <button type="button" className={`lang-toggle ${className}`} onClick={toggle} aria-label={t.lang.label} lang={lang === 'en' ? 'ar' : 'en'}>
-      {t.lang.switchTo}
-    </button>
-  );
-}
-
 function OrderLink({ className, onClick }: { className: string; onClick?: () => void }) {
   const { t } = useLanguage();
-  // A verified checkout URL replaces the in-page "How to order" panel when configured.
+  // A verified checkout URL leaves the page; otherwise the button scrolls to the order section.
   return order.url ? (
     <a className={className} href={order.url} onClick={onClick}>
       {t.nav.cta}
@@ -77,7 +68,6 @@ function MobileMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
         </nav>
         <div className="mobile-menu__actions">
           <OrderLink className="btn btn--gold" onClick={onClose} />
-          <LanguageToggle />
         </div>
       </div>
     </dialog>
@@ -120,7 +110,6 @@ export function Header() {
           <a href={`#${ANCHORS.inside}`}>{t.nav.inside}</a>
         </nav>
         <div className="site-header__actions">
-          <LanguageToggle className="site-header__lang" />
           <OrderLink className="btn btn--gold btn--small" />
           <button
             type="button"

@@ -1,7 +1,8 @@
 /**
  * Pure, dependency-free choreography for the Mulled Wine Kit story.
  *
- * Every object state is derived from two numbers only:
+ * Every object state is derived from three numbers only:
+ *   gift   0..1  gifting copy hold -> closed kit in the preparation hero pose
  *   intro  0..1  hero framing -> chapter one framing (while the hero copy scrolls away)
  *   p      0..1  normalized story progress across the six preparation chapters
  *
@@ -448,7 +449,8 @@ function stirAngle(p: number): number {
   return a;
 }
 
-export function computeState(introIn: number, pIn: number): StoryState {
+/** @param giftIn reserved for the gifting copy hold; scene framing matches the hero pose throughout. */
+export function computeState(introIn: number, pIn: number, _giftIn = 1): StoryState {
   const p = clamp01(pIn);
   const intro = clamp01(introIn);
 

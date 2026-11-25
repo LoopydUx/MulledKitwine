@@ -35,13 +35,12 @@ const mix = (a: StageRegion, b: StageRegion, t: number): StageRegion => ({
   h: a.h + (b.h - a.h) * t,
 });
 
-export function stageView(width: number, height: number, intro: number, p: number, rtl: boolean): StageView {
+export function stageView(width: number, height: number, intro: number, p: number): StageView {
   const portrait = isPortraitLayout(width, height);
   const set = REGIONS[portrait ? 'portrait' : 'landscape'];
   const hero = portrait && height < SHORT_PORTRAIT_HEIGHT ? SHORT_PORTRAIT_HERO : set.hero;
   let region = mix(hero, set.story, smooth(Math.min(Math.max(intro, 0), 1)));
   if (p > 0.95) region = mix(region, set.finale, smooth(Math.min((p - 0.95) / 0.035, 1)));
-  if (rtl && !portrait) region = { ...region, cx: 1 - region.cx };
   return { width, height, portrait, region };
 }
 

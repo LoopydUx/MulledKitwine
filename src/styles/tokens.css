@@ -22,8 +22,8 @@
   --ink-soft: #5e4a47;
   --line: rgb(91 26 38 / 0.18);
 
-  --font-display: 'Cormorant Garamond', 'Noto Naskh Arabic', 'Times New Roman', serif;
-  --font-ui: 'Jost', 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-ui: 'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --tracking: 0.16em;
   --tracking-wide: 0.3em;
   --caps: uppercase;
@@ -38,15 +38,6 @@
   --fg-soft: var(--ink-soft);
   --accent: var(--wine);
   --focus: var(--wine);
-}
-
-/* Arabic: joined scripts must not be letter-spaced or upper-cased */
-:root:lang(ar) {
-  --font-display: 'Noto Naskh Arabic', 'Cormorant Garamond', serif;
-  --font-ui: 'Tajawal', 'Jost', system-ui, sans-serif;
-  --tracking: 0;
-  --tracking-wide: 0;
-  --caps: none;
 }
 
 .on-dark,

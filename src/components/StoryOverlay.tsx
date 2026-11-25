@@ -43,6 +43,14 @@ export function StoryOverlay({ chapter }: { chapter: number }) {
     <div className="stage__overlay">
       <h2 className="visually-hidden">{s.heading}</h2>
 
+      <article className="story-gift" aria-labelledby="gift-title">
+        <p className="eyebrow story-gift__eyebrow">{s.gift.eyebrow}</p>
+        <h3 id="gift-title" className="story-gift__title">
+          {s.gift.title}
+        </h3>
+        <p className="story-gift__body">{s.gift.body}</p>
+      </article>
+
       {s.chapters.map((c, i) => (
         <article key={i} className="story-copy" data-chapter={i + 1} aria-labelledby={`story-title-${i + 1}`}>
           <ChapterNumber index={i} />

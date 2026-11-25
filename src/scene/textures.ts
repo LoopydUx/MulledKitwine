@@ -315,6 +315,6 @@ export async function loadSceneTextures(anisotropy: number): Promise<SceneTextur
 
 export function disposeSceneTextures(t: SceneTextures): void {
   for (const value of Object.values(t)) {
-    if (value && typeof (value as Texture).dispose === 'function' && (value as Texture).isTexture) (value as Texture).dispose();
+    if (value && typeof value === 'object' && 'isTexture' in value && (value as Texture).isTexture) (value as Texture).dispose();
   }
 }

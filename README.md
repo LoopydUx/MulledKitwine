@@ -15,10 +15,10 @@ npm run preview    # serve dist/
 
 | What | Where |
 | --- | --- |
-| Order URL and price | `order` in `src/config/product.ts`. While `url` is `null` the page shows a "How to order" panel instead of a checkout link; a price appears only when set. |
+| Order URL and price | `order` in `src/config/product.ts`. The checkout button and price appear only when `url` and `price` are set. |
 | Name of the mini bottle | `product.spirit` in `src/config/product.ts` (default: orange aperitif). |
 | Product facts, kit contents, brand links, asset paths | `src/config/product.ts` |
-| All page copy, English and Arabic | `src/i18n/strings.ts` |
+| All page copy | `src/i18n/strings.ts` |
 | Story timing (when each action happens, 0 to 1) | `T`, `CHAPTER_RANGES` in `src/scene/choreography.ts` |
 | Scroll length of the story | `src/config/story.ts` |
 | Colours, fonts, spacing | `src/styles/tokens.css` |
@@ -42,7 +42,7 @@ npm run stills     # writes public/stills/*.webp and src/config/kit-markers.json
 
 ## URL switches for testing
 
-`?motion=reduce` or `?motion=full` overrides the motion preference, `?webgl=off` forces the no-WebGL path, `?lang=ar` or `?lang=en` picks the language, and `?freeze=1` holds the decorative loops (steam, ripples) still so frames can be compared.
+`?motion=reduce` or `?motion=full` overrides the motion preference, `?webgl=off` forces the no-WebGL path, and `?freeze=1` holds the decorative loops (steam, ripples) still so frames can be compared.
 
 ## Checks
 
@@ -52,7 +52,7 @@ npm run verify:page    # browser checks; needs the dev server and an installed C
 npm run verify         # type-check + both of the above
 ```
 
-`verify:page` writes screenshots and `report.json` to `.verify/`. Run one group with, for example, `npm run verify:page -- mobile` (groups: `desktop`, `sizes`, `mobile`, `arabic`, `reduced`, `contrast`, `nowebgl`, `slow`). To test the production build, run `npm run preview` and set `SITE_URL=http://127.0.0.1:4173`.
+`verify:page` writes screenshots and `report.json` to `.verify/`. Run one group with, for example, `npm run verify:page -- mobile` (groups: `desktop`, `sizes`, `mobile`, `reduced`, `contrast`, `nowebgl`, `slow`). To test the production build, run `npm run preview` and set `SITE_URL=http://127.0.0.1:4173`.
 
 ## Source material
 

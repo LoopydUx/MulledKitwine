@@ -1,10 +1,6 @@
-import { product, type Lang } from '../config/product';
+import { product } from '../config/product';
 
-/**
- * Interface and story copy in English and Arabic.
- * Arabic recipe wording follows the supplied booklet ("طريقة التحضير") verbatim;
- * the remaining Arabic interface copy is written to match its tone.
- */
+/** Interface and story copy. */
 
 export interface ChapterCopy {
   title: string;
@@ -24,7 +20,6 @@ export interface RecipeStep {
 export interface Strings {
   meta: { title: string; description: string };
   nav: { ritual: string; inside: string; recipe: string; cta: string; menu: string; close: string; primary: string; home: string; skipToContent: string };
-  lang: { switchTo: string; label: string };
   hero: { eyebrow: string; title: string; body: string; primary: string; secondary: string; scroll: string; alt: string };
   story: {
     heading: string;
@@ -32,6 +27,8 @@ export interface Strings {
     of: string;
     chaptersNav: string;
     skip: string;
+    /** Gift opening copy, shown before the preparation chapters. */
+    gift: { eyebrow: string; title: string; body: string; alt: string };
     chapters: ChapterCopy[];
     ingredients: { orange: string; cinnamon: string; star: string; cardamom: string; clove: string };
     cues: { lowHeat: string; minutes15: string; doNotBoil: string; heatOff: string; rest: string; minutes8: string };
@@ -65,12 +62,6 @@ export interface Strings {
     body: string;
     cta: string;
     ctaOnline: string;
-    howTitle: string;
-    howBody: string;
-    website: string;
-    instagram: string;
-    boutique: string;
-    priceNote: string;
     alt: string;
   };
   footer: { replay: string; website: string; instagram: string; responsible: string; links: string };
@@ -94,7 +85,6 @@ const en: Strings = {
     home: 'Cantina Cana, back to top',
     skipToContent: 'Skip to content',
   },
-  lang: { switchTo: 'العربية', label: 'Switch language to Arabic' },
   hero: {
     eyebrow: 'Mulled Wine Kit',
     title: 'A warm winter ritual.',
@@ -110,6 +100,12 @@ const en: Strings = {
     of: 'of',
     chaptersNav: 'Chapters of the ritual',
     skip: 'Skip animation',
+    gift: {
+      eyebrow: 'THE ART OF GIFTING',
+      title: 'Some Gifts Are Meant to Be Shared.',
+      body: 'A thoughtful gift that turns into a moment together.',
+      alt: 'The Cantina Cana Mulled Wine Kit gift box, closed and ready to open.',
+    },
     chapters: [
       {
         title: 'Open a little warmth.',
@@ -209,12 +205,6 @@ const en: Strings = {
     body: 'And share warm moments together.',
     cta: 'Get the kit',
     ctaOnline: 'Order online',
-    howTitle: 'How to order',
-    howBody: 'This page does not take orders or payments. To buy the Mulled Wine Kit, reach Cantina Cana directly:',
-    website: 'Visit the website',
-    instagram: 'Message on Instagram',
-    boutique: 'Visit in person',
-    priceNote: 'Price and availability are confirmed by Cantina Cana.',
     alt: 'The closed gift box, the 750 ml wine bottle, the 40 ml orange aperitif, the recipe booklet and a steaming glass of mulled wine arranged together.',
   },
   footer: {
@@ -226,152 +216,5 @@ const en: Strings = {
   },
 };
 
-const ar: Strings = {
-  meta: {
-    title: 'مجموعة النبيذ الساخن من كانتينا كانا | طقوس شتوية دافئة',
-    description: 'نبيذ أحمر، توابل عطرة، ولمسة من البرتقال، جُمعت بعناية في علبة واحدة.',
-  },
-  nav: {
-    ritual: 'الطقوس',
-    inside: 'داخل العلبة',
-    recipe: 'الوصفة',
-    cta: 'احصل على المجموعة',
-    menu: 'القائمة',
-    close: 'إغلاق القائمة',
-    primary: 'التنقل الرئيسي',
-    home: 'كانتينا كانا، العودة إلى الأعلى',
-    skipToContent: 'انتقل إلى المحتوى',
-  },
-  lang: { switchTo: 'English', label: 'تغيير اللغة إلى الإنجليزية' },
-  hero: {
-    eyebrow: 'مجموعة النبيذ الساخن',
-    title: 'طقوس شتوية دافئة.',
-    body: 'نبيذ أحمر، توابل عطرة، ولمسة من البرتقال. جُمعت بعناية في علبة واحدة، جاهزة للمشاركة.',
-    primary: 'اكتشف الطقوس',
-    secondary: 'استكشف المجموعة',
-    scroll: 'مرّر للأسفل',
-    alt: 'علبة هدايا كانتينا كانا العنّابية المغلقة لمجموعة النبيذ الساخن، مطبوعة بالذهبي مع زجاجة نبيذ وزجاجة صغيرة وبرتقال مجفف وقرفة ويانسون نجمي.',
-  },
-  story: {
-    heading: 'الطقوس في ستة فصول',
-    chapterWord: 'الفصل',
-    of: 'من',
-    chaptersNav: 'فصول الطقوس',
-    skip: 'تخطَّ الحركة',
-    chapters: [
-      {
-        title: 'افتح قليلًا من الدفء.',
-        body: `ارفع الغطاء لتجد زجاجة نبيذ أحمر جاف، توابل الشتاء، برتقالًا مجففًا، وزجاجة صغيرة من ${spirit.inSentence.ar}. افتح النبيذ لتبدأ.`,
-        alt: 'علبة الهدايا مفتوحة: زجاجة النبيذ على اليسار، وكتيّب الوصفة والبرتقال المجفف والزجاجة الصغيرة والقرفة والفتاحة في الأقسام على اليمين.',
-      },
-      {
-        title: 'ابدأ بالنبيذ.',
-        body: 'اسكب زجاجة النبيذ الأحمر كاملة (750 مل) في طنجرة.',
-        alt: 'الزجاجة المفتوحة تسكب خيطًا من النبيذ الأحمر الداكن في طنجرة.',
-      },
-      {
-        title: 'دع التوابل تروي حكايتها.',
-        body: 'أضف شرائح البرتقال المجفف، أعواد القرفة، اليانسون النجمي، الهيل، والقرنفل، ثم اخلطهم مع النبيذ.',
-        alt: 'شرائح البرتقال المجفف وأعواد القرفة واليانسون النجمي والهيل والقرنفل تسقط من أكياسها في النبيذ.',
-      },
-      {
-        title: 'دفء هادئ. عبير غني.',
-        body: 'سخّن الخليط على نار هادئة لمدة 15 دقيقة تقريبًا، وحرّكه من وقت لآخر حتى تمتزج النكهات.',
-        note: 'انتبه، لا تتركه يغلي!',
-        alt: 'الطنجرة فوق موقد يتوهّج بهدوء، وخيوط رقيقة من البخار تتصاعد بينما تحرّك ملعقة خشبية الخليط.',
-      },
-      {
-        title: 'اللمسة الأخيرة.',
-        body: `أطفئ النار، أضف ${spirit.recipeReference.ar} وحرّك الخليط. اتركه لمدة 8 دقائق إضافية حتى تمتزج النكهات أكثر.`,
-        alt: 'بعد إطفاء الموقد، تسكب الزجاجة الصغيرة خيطًا كهرمانيًا من مشروب البرتقال في النبيذ.',
-      },
-      {
-        title: 'اسكب. صفِّ. شارك.',
-        body: 'صفِّ المشروب عبر مصفاة ناعمة في كأس مقاوم للحرارة، وقدّمه دافئًا.',
-        note: 'أضف السكر حسب الرغبة، ينصح بملعقة صغيرة لكل كوب.',
-        alt: 'الطنجرة تسكب عبر مصفاة ناعمة في كأس كريستال بمقبض، ويبقى البرتقال والتوابل الكاملة في المصفاة.',
-      },
-    ],
-    ingredients: { orange: 'برتقال مجفف', cinnamon: 'أعواد القرفة', star: 'اليانسون النجمي', cardamom: 'الهيل', clove: 'القرنفل' },
-    cues: {
-      lowHeat: 'نار هادئة',
-      minutes15: '15 دقيقة تقريبًا',
-      doNotBoil: 'لا تتركه يغلي',
-      heatOff: 'النار مطفأة',
-      rest: 'اتركه يرتاح',
-      minutes8: '8 دقائق',
-    },
-    finale: {
-      line: 'صُنع بعناية. يُشارَك بدفء.',
-      note: 'أضف السكر حسب الرغبة، ينصح بملعقة صغيرة لكل كوب. قدّمه دافئًا وصحة وهنا!',
-      alt: 'كأس كريستال بمقبض من النبيذ الساخن يتصاعد منه قليل من البخار.',
-    },
-    loading: 'جارٍ تحضير المشهد',
-    stillsBecauseMotion: 'تفضّل تقليل الحركة، لذلك تُعرض الطقوس كصور ثابتة.',
-    stillsBecauseWebgl: 'الرسوم ثلاثية الأبعاد غير متاحة على هذا الجهاز، لذلك تُعرض الطقوس كصور ثابتة.',
-    playAnimated: 'تشغيل الحركة مع التمرير',
-    showStills: 'عرض الصور الثابتة',
-  },
-  kit: {
-    eyebrow: 'داخل مجموعتك',
-    title: 'داخل العلبة',
-    intro: 'كل ما تحتاجه الوصفة، مجموعًا في علبة عنّابية واحدة.',
-    included: 'ضمن المجموعة',
-    alt: 'علبة الهدايا مفتوحة ومحتوياتها مصفوفة أمامها: زجاجة النبيذ، الزجاجة الصغيرة، كتيّب الوصفة، شرائح البرتقال المجفف، اليانسون النجمي، الهيل، القرنفل، أعواد القرفة، والفتاحة.',
-  },
-  recipe: {
-    eyebrow: 'الوصفة',
-    title: 'طريقة التحضير',
-    intro: 'خمس خطوات من الكتيّب المرفق بمجموعتك.',
-    stepWord: 'الخطوة',
-    steps: [
-      { title: 'اسكب', body: 'اسكب النبيذ الأحمر كاملة في طنجرة.' },
-      { title: 'اخلط', body: 'أضف شرائح البرتقال المجفف، أعواد القرفة، اليانسون النجمي، الهيل، والقرنفل، ثم اخلطهم مع النبيذ.' },
-      {
-        title: 'سخّن',
-        body: 'سخّن الخليط على نار هادئة لمدة 15 دقيقة تقريبًا، وحرّكه من وقت لآخر حتى تمتزج النكهات.',
-        warning: 'انتبه، لا تتركه يغلي!',
-      },
-      {
-        title: 'اتركه يرتاح',
-        body: `أطفئ النار، أضف ${spirit.recipeReference.ar} وحرّك الخليط. اتركه لمدة 8 دقائق إضافية حتى تمتزج النكهات أكثر.`,
-      },
-      {
-        title: 'قدّم وشارك',
-        body: 'أضف السكر حسب الرغبة، ينصح بملعقة صغيرة لكل كوب. قدّمه دافئًا وصحة وهنا!',
-      },
-    ],
-    timeTitle: 'الوقت',
-    time: 'نحو 15 دقيقة على نار هادئة، ثم 8 دقائق من الراحة.',
-    needTitle: 'ما ستحتاجه',
-    fromKit: 'من المجموعة',
-    fromKitList: `750 مل من النبيذ الأحمر الجاف، شرائح البرتقال المجفف، أعواد القرفة، اليانسون النجمي، الهيل، القرنفل، 40 مل من ${spirit.inSentence.ar}، وفتاحة النبيذ.`,
-    fromKitchen: 'من مطبخك',
-    fromKitchenList: 'طنجرة، ملعقة، مصفاة ناعمة، وكؤوس أو أكواب مقاومة للحرارة. والسكر حسب الرغبة.',
-    read: 'اقرأ كتيّب الوصفة',
-    pdfNote: 'PDF',
-    bookletAlt: 'صفحتا طريقة التحضير في كتيّب وصفات كانتينا كانا، بالإنجليزية والعربية.',
-  },
-  order: {
-    title: 'اسكب. تبّل. سخّن.',
-    body: 'وشارك لحظات دافئة معًا.',
-    cta: 'احصل على المجموعة',
-    ctaOnline: 'اطلب عبر الإنترنت',
-    howTitle: 'طريقة الطلب',
-    howBody: 'هذه الصفحة لا تستقبل طلبات أو مدفوعات. لشراء مجموعة النبيذ الساخن، تواصل مع كانتينا كانا مباشرة:',
-    website: 'زُر الموقع الإلكتروني',
-    instagram: 'راسلنا على إنستغرام',
-    boutique: 'زُرنا شخصيًا',
-    priceNote: 'السعر والتوفّر يؤكَّدان من كانتينا كانا.',
-    alt: 'علبة الهدايا المغلقة وزجاجة النبيذ سعة 750 مل وزجاجة الأبيريتيف سعة 40 مل وكتيّب الوصفة وكأس نبيذ ساخن يتصاعد منه البخار، مرتّبة معًا.',
-  },
-  footer: {
-    replay: 'أعد الطقوس من البداية',
-    website: 'الموقع الإلكتروني',
-    instagram: 'إنستغرام',
-    responsible: 'يحتوي على كحول. استمتع بمسؤولية.',
-    links: 'روابط العلامة',
-  },
-};
 
-export const strings: Record<Lang, Strings> = { en, ar };
+export const strings: Strings = en;

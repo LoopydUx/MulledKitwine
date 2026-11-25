@@ -6,7 +6,7 @@
  *
  * What it covers: the scroll story forward and backward (same frames both ways), rapid
  * scrolling, chapter jumps, navigation, replay, resize, WebGL context loss, slow loading,
- * mobile menu focus handling, English/Arabic, reduced motion, no-WebGL,
+ * mobile menu focus handling, reduced motion, no-WebGL,
  * image alt text, text contrast, horizontal overflow, and console/network errors.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -80,6 +80,7 @@ const storyState = (page) =>
     return {
       p: +stage.dataset.p,
       intro: +stage.dataset.intro,
+      gift: stage.dataset.gift !== undefined ? +stage.dataset.gift : undefined,
       tone: stage.dataset.tone,
       status: stage.dataset.status,
       phase: stage.dataset.phase,
@@ -247,7 +248,8 @@ if (wants('desktop')) {
     await clickEl(page, '.site-footer a[href="#top"]');
     await sleep(2200);
     s = await storyState(page);
-    check(g, 'footer replay link returns to the start', s.y === 0 && s.p === 0 && s.intro === 0 && s.phase === 'hero');
+    // Start is the gift opening (phase gift, gift≈0), then the preparation hero.
+    check(g, 'footer replay link returns to the start', s.y === 0 && s.p === 0 && s.intro === 0 && (s.phase === 'gift' || s.phase === 'hero'));
     await seek(page, 0.262);
     d = await pixelDiff(at(0.262).shot, await snap(page, 'desktop-after-replay'));
     check(g, 'the story plays identically after replay', d.mean < 0.6, `mean pixel difference ${fx(d.mean, 3)}/255`);
@@ -256,9 +258,9 @@ if (wants('desktop')) {
     const orderInfo = await page.evaluate(() => {
       const how = document.getElementById('how-to-order');
       const cta = document.querySelector('.order__copy a.btn');
-      return { how: !!how, cta: cta?.getAttribute('href'), price: !!document.querySelector('.order__price'), text: how?.innerText ?? '' };
+      return { how: !!how, cta: cta?.getAttribute('href') ?? null, price: !!document.querySelector('.order__price') };
     });
-    check(g, 'with no order URL configured the CTA opens a "How to order" panel, with no price', orderInfo.how && orderInfo.cta === '#how-to-order' && !orderInfo.price);
+    check(g, 'with no order URL configured there is no How to order panel, no checkout button, and no price', !orderInfo.how && orderInfo.cta === null && !orderInfo.price);
 
     // images
     await loadEverything(page);
@@ -431,68 +433,6 @@ if (wants('mobile')) {
   await close();
 }
 
-/* ------------------------------------------------------------------- Arabic */
-if (wants('arabic')) {
-  const g = 'arabic';
-  const arabic = /[\u0600-\u06FF]/;
-  for (const view of ['desktop', 'mobile']) {
-    const { page, problems, close } = await open(browser, { view, query: 'lang=ar&motion=full&freeze=1' });
-    try {
-      await stageReady(page);
-      const info = await page.evaluate(() => ({
-        dir: document.documentElement.dir,
-        lang: document.documentElement.lang,
-        title: document.title,
-        h1: document.querySelector('h1').textContent,
-        wordmarks: [...document.querySelectorAll('.wordmark')].every((w) => w.dir === 'ltr' && /CANTINA CANA/i.test(w.textContent)),
-        canvasMirrored: getComputedStyle(document.querySelector('.stage canvas')).transform !== 'none',
-        chapters: [...document.querySelectorAll('.story-copy__title')].map((h) => h.textContent),
-        kit: [...document.querySelectorAll('.kit-item__name')].map((h) => h.textContent),
-        untranslated: [...document.querySelectorAll('main h1, main h2, main h3, main h4, main p, main li, main a, main button, footer a, footer p')]
-          .filter((el) => !el.closest('[dir="ltr"], [lang="en"]') && el.children.length === 0)
-          .map((el) => el.textContent.trim())
-          .filter((text) => /[A-Za-z]{3,}/.test(text) && !/[\u0600-\u06FF]/.test(text)),
-      }));
-      check(g, `${view}: page switches to right-to-left Arabic`, info.dir === 'rtl' && info.lang === 'ar' && arabic.test(info.h1) && arabic.test(info.title), info.h1.trim());
-      check(g, `${view}: brand wordmark stays left-to-right and the 3D artwork is not mirrored`, info.wordmarks && !info.canvasMirrored);
-      check(
-        g,
-        `${view}: chapters and kit are in Arabic`,
-        info.chapters.length === 6 && info.chapters.every((t) => arabic.test(t)) && info.kit.every((t) => arabic.test(t)),
-      );
-      check(g, `${view}: no English-only text left in the Arabic page`, info.untranslated.length === 0, [...new Set(info.untranslated)].slice(0, 8).join(' | '));
-      await snap(page, `ar-${view}-hero`);
-      await scrub(g, page, `ar-${view}`, [0.0775, 0.262, 0.4365, 0.607, 0.7475, 0.9285, 1]);
-      await loadEverything(page);
-      check(g, `${view}: no horizontal overflow in Arabic`, await noOverflow(page));
-      for (const id of ['inside-the-box', 'order']) {
-        await page.evaluate((id) => document.getElementById(id).scrollIntoView(), id);
-        await sleep(900);
-        await snap(page, `ar-${view}-${id}`);
-      }
-      if (view === 'desktop') {
-        // toggle back to English in place, mid-story
-        await seek(page, 0.4365);
-        await clickEl(page, '.site-header__lang');
-        await sleep(1800);
-        const en = await page.evaluate(() => ({ dir: document.documentElement.dir, lang: document.documentElement.lang, h1: document.querySelector('h1').textContent }));
-        const s = await storyState(page);
-        const want = progressForScroll(s.y, 1440, 900);
-        check(g, 'language toggle switches to English mid-story without losing the scroll state', en.dir === 'ltr' && en.lang === 'en' && /winter/i.test(en.h1) && Math.abs(s.p - want.p) < 0.004, `p ${fx(s.p)} expected ${fx(want.p)}`);
-        await snap(page, 'ar-desktop-toggled-to-english');
-        await clickEl(page, '.site-header__lang');
-        await sleep(1200);
-        const back = await page.evaluate(() => document.documentElement.dir);
-        check(g, 'toggle switches back to Arabic', back === 'rtl');
-      }
-      check(g, `${view}: no console or network errors`, problems.length === 0, problems.join(' | '));
-    } catch (err) {
-      check(g, `arabic ${view} run completed`, false, String(err));
-    }
-    await close();
-  }
-}
-
 /* ----------------------------------------------------------- reduced motion */
 const CONTRAST_AUDIT = () => {
   const parse = (value) => {
@@ -633,31 +573,29 @@ if (wants('reduced')) {
 /* ------------------------------------------------- contrast over the stage */
 if (wants('contrast')) {
   const g = 'contrast';
-  for (const lang of ['en', 'ar']) {
-    const { page, close } = await open(browser, { view: 'desktop', query: `lang=${lang}&motion=full&freeze=1` });
-    try {
-      await stageReady(page);
-      const failing = [];
-      let lowest = null;
-      for (const p of [0, 0.0775, 0.262, 0.4365, 0.607, 0.7475, 0.9285, 1]) {
-        if (p === 0) await page.evaluate(() => window.scrollTo(0, 0));
-        else await seek(page, p);
-        if (p === 0) await sleep(800);
-        const audit = await page.evaluate(CONTRAST_AUDIT);
-        // only text that is actually showing over the stage or in the header at this moment
-        const visible = await page.evaluate(() => [...document.querySelectorAll('.story-copy, .story-finale, .hero')].filter((el) => +getComputedStyle(el).opacity > 0.9).length);
-        if (!visible) continue;
-        for (const a of audit) {
-          if (!lowest || a.ratio / a.need < lowest.ratio / lowest.need) lowest = { ...a, p };
-          if (a.ratio < a.need) failing.push(`p=${p}: ${a.ratio}:1 "${a.sample}" ${a.color} on ${a.on}`);
-        }
+  const { page, close } = await open(browser, { view: 'desktop', query: 'motion=full&freeze=1' });
+  try {
+    await stageReady(page);
+    const failing = [];
+    let lowest = null;
+    for (const p of [0, 0.0775, 0.262, 0.4365, 0.607, 0.7475, 0.9285, 1]) {
+      if (p === 0) await page.evaluate(() => window.scrollTo(0, 0));
+      else await seek(page, p);
+      if (p === 0) await sleep(800);
+      const audit = await page.evaluate(CONTRAST_AUDIT);
+      // only text that is actually showing over the stage or in the header at this moment
+      const visible = await page.evaluate(() => [...document.querySelectorAll('.story-copy, .story-finale, .hero')].filter((el) => +getComputedStyle(el).opacity > 0.9).length);
+      if (!visible) continue;
+      for (const a of audit) {
+        if (!lowest || a.ratio / a.need < lowest.ratio / lowest.need) lowest = { ...a, p };
+        if (a.ratio < a.need) failing.push(`p=${p}: ${a.ratio}:1 "${a.sample}" ${a.color} on ${a.on}`);
       }
-      check(g, `${lang}: text over the stage meets WCAG AA against the least favourable backdrop tone`, failing.length === 0, failing.length ? [...new Set(failing)].slice(0, 6).join(' | ') : `lowest ${lowest.ratio}:1 at p=${lowest.p} ("${lowest.sample}", needs ${lowest.need}:1)`);
-    } catch (err) {
-      check(g, `contrast ${lang} run completed`, false, String(err));
     }
-    await close();
+    check(g, 'text over the stage meets WCAG AA against the least favourable backdrop tone', failing.length === 0, failing.length ? [...new Set(failing)].slice(0, 6).join(' | ') : `lowest ${lowest.ratio}:1 at p=${lowest.p} ("${lowest.sample}", needs ${lowest.need}:1)`);
+  } catch (err) {
+    check(g, 'contrast run completed', false, String(err));
   }
+  await close();
 }
 
 /* ---------------------------------------------------------------- no WebGL */

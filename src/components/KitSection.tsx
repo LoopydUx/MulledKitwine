@@ -36,7 +36,7 @@ export function KitSection() {
       <figure className="kit__figure reveal" ref={figureRef}>
         <div className="kit__art">
           <img src={assets.stills.kit} alt={t.kit.alt} width={2000} height={1500} loading="lazy" decoding="async" />
-          {/* Numbers match the list below; brand artwork is never mirrored in Arabic. */}
+          {/* Numbers match the list below. */}
           <div className="kit__markers" aria-hidden="true" dir="ltr">
             {markers.map((m) => (
               <span

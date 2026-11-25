@@ -22,8 +22,20 @@ export function StaticStory({ reason, canAnimate, onPlay }: { reason: StaticReas
         <div className="static-hero__bg" aria-hidden="true">
           <SatinRibbon />
         </div>
-        <img className="static-hero__still" src={assets.stills.hero} alt={t.hero.alt} width={2000} height={1500} fetchPriority="high" />
-        <HeroContent />
+        <img className="static-hero__still" src={assets.stills.hero} alt={s.gift.alt} width={2000} height={1500} fetchPriority="high" />
+        <div className="static-hero__gift">
+          <p className="eyebrow">{s.gift.eyebrow}</p>
+          <h2 className="static-hero__gift-title">{s.gift.title}</h2>
+          <p className="static-hero__gift-body">{s.gift.body}</p>
+        </div>
+      </div>
+
+      <div className="static-hero static-hero--ritual">
+        <div className="static-hero__bg" aria-hidden="true">
+          <SatinRibbon />
+        </div>
+        <img className="static-hero__still" src={assets.stills.hero} alt={t.hero.alt} width={2000} height={1500} loading="lazy" decoding="async" />
+        <HeroContent ritualHref={`#${ANCHORS.ritual}`} />
       </div>
 
       <section id={ANCHORS.ritual} className="static-story" aria-labelledby="static-story-title">

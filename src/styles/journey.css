@@ -65,14 +65,6 @@
   opacity: var(--warm);
 }
 
-[dir='rtl'] .stage__scrim {
-  background: linear-gradient(to left, var(--stage-ivory) 0%, var(--stage-ivory) 17%, rgb(245 236 221 / 0) 39%);
-}
-
-[dir='rtl'] .stage__scrim::after {
-  background: linear-gradient(to left, var(--stage-warm) 0%, var(--stage-warm) 17%, rgb(232 213 184 / 0) 39%);
-}
-
 .satin {
   position: absolute;
   inset-inline: 0;
@@ -104,6 +96,7 @@
   object-fit: contain;
   transform: translate(-50%, -50%);
   transition: opacity 0.7s var(--ease);
+  z-index: 2;
 }
 
 .stage__still--hero {
@@ -111,14 +104,6 @@
   top: 53%;
   width: 54%;
   height: 93%;
-}
-
-[dir='rtl'] .stage__still {
-  left: 34%;
-}
-
-[dir='rtl'] .stage__still--hero {
-  left: 30%;
 }
 
 .stage[data-status='ready'] .stage__still {
@@ -169,6 +154,13 @@
   padding: var(--header-h) var(--gutter) 0;
   color: var(--ivory);
   pointer-events: none;
+  /* Appear as the gift opening finishes (--gift from Journey). */
+  opacity: var(--gift, 0);
+}
+
+.stage[data-phase='gift'] ~ .hero {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .hero__copy {
@@ -185,13 +177,6 @@
   line-height: 1.02;
   letter-spacing: -0.01em;
   text-wrap: balance;
-}
-
-:lang(ar) .hero__title {
-  line-height: 1.35;
-  letter-spacing: 0;
-  font-weight: 600;
-  font-size: clamp(2.5rem, 4.6vw, 4.6rem);
 }
 
 .hero__ornament {
@@ -230,11 +215,6 @@
   pointer-events: auto;
 }
 
-[dir='rtl'] .hero__scroll {
-  transform: translateX(50%);
-  font-size: 0.85rem;
-}
-
 .hero__scroll svg {
   animation: scroll-cue 2.4s var(--ease) infinite;
 }
@@ -255,6 +235,7 @@
 /* Chapter copy                                                        */
 /* ------------------------------------------------------------------ */
 
+.story-gift,
 .story-copy,
 .story-finale {
   position: absolute;
@@ -268,16 +249,36 @@
   will-change: opacity, transform;
 }
 
+.story-gift {
+  opacity: 1;
+}
+
+.story-gift__eyebrow {
+  margin-bottom: 0.85rem;
+}
+
+.story-gift__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 3.2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.story-gift__body {
+  margin-top: 0.9rem;
+  font-size: clamp(1rem, 1.15vw, 1.12rem);
+  line-height: 1.55;
+  color: var(--fg-soft);
+  max-width: 28ch;
+}
+
 .story-copy__count {
   font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: var(--tracking-wide);
   text-transform: var(--caps);
   color: var(--accent);
-}
-
-:lang(ar) .story-copy__count {
-  font-size: 0.95rem;
 }
 
 .story-copy__count-of {
@@ -292,13 +293,6 @@
   line-height: 1.06;
   letter-spacing: -0.005em;
   text-wrap: balance;
-}
-
-:lang(ar) .story-copy__title {
-  line-height: 1.4;
-  letter-spacing: 0;
-  font-weight: 600;
-  font-size: clamp(2rem, 3vw, 3rem);
 }
 
 .story-copy__body {
@@ -317,11 +311,6 @@
   font-size: 1.1rem;
   line-height: 1.45;
   color: var(--fg-soft);
-}
-
-:lang(ar) .story-copy__note {
-  font-style: normal;
-  font-size: 1rem;
 }
 
 /* time and safety cues */
@@ -346,11 +335,6 @@
   letter-spacing: 0.08em;
   line-height: 1.25;
   color: var(--ink);
-}
-
-:lang(ar) .cue {
-  font-size: 0.95rem;
-  letter-spacing: 0;
 }
 
 .cue > svg:not(.cue__ring) {
@@ -417,11 +401,6 @@
   opacity: 0;
 }
 
-:lang(ar) .story-ingredients li {
-  font-style: normal;
-  font-size: clamp(1.3rem, 1.7vw, 1.7rem);
-}
-
 .story-ingredients li::before {
   content: '';
   flex: none;
@@ -443,12 +422,6 @@
   font-weight: 500;
   line-height: 1.12;
   text-wrap: balance;
-}
-
-:lang(ar) .story-finale__line {
-  line-height: 1.5;
-  font-weight: 600;
-  font-size: clamp(1.9rem, 2.9vw, 2.9rem);
 }
 
 .story-finale__note {
@@ -537,10 +510,6 @@
   background: rgb(44 7 14 / 0.35);
 }
 
-:lang(ar) .story-skip {
-  font-size: 0.95rem;
-}
-
 .story-skip:hover {
   color: var(--accent);
 }
@@ -578,10 +547,6 @@
 
   .hero__title {
     font-size: clamp(2.35rem, 10.4vw, 4rem);
-  }
-
-  :lang(ar) .hero__title {
-    font-size: clamp(2.1rem, 9vw, 3.4rem);
   }
 
   .hero__ornament {
@@ -627,11 +592,6 @@
 
   .story-copy__title {
     font-size: clamp(1.75rem, 7.6vw, 2.8rem);
-  }
-
-  :lang(ar) .story-copy__title {
-    font-size: clamp(1.6rem, 6.6vw, 2.4rem);
-    line-height: 1.35;
   }
 
   .story-copy__body {
@@ -685,13 +645,11 @@
     opacity: 0.5;
   }
 
-  .stage__scrim,
-  [dir='rtl'] .stage__scrim {
+  .stage__scrim {
     background: linear-gradient(to bottom, var(--stage-ivory) 0%, var(--stage-ivory) 20%, rgb(245 236 221 / 0) 38%);
   }
 
-  .stage__scrim::after,
-  [dir='rtl'] .stage__scrim::after {
+  .stage__scrim::after {
     background: linear-gradient(to bottom, var(--stage-warm) 0%, var(--stage-warm) 20%, rgb(232 213 184 / 0) 38%);
   }
 
@@ -723,20 +681,24 @@
     width: 22px;
   }
 
-  .stage__still,
-  [dir='rtl'] .stage__still {
+  .stage__still {
     left: 50%;
     top: 63.5%;
     width: 100%;
     height: 58%;
   }
 
-  .stage__still--hero,
-  [dir='rtl'] .stage__still--hero {
+  .stage__still--hero {
     left: 50%;
     top: 72.5%;
     width: 90%;
     height: 53%;
+  }
+
+  .story-gift,
+  .story-copy,
+  .story-finale {
+    width: min(32rem, 88vw);
   }
 
   .stage__bg--ivory {
@@ -773,10 +735,6 @@
   .story-skip {
     letter-spacing: 0.08em;
   }
-
-  :lang(ar) .story-skip {
-    letter-spacing: 0;
-  }
 }
 
 /* short phones: both hero buttons share a row and the box sits lower (see SHORT_PORTRAIT_HERO in scene/layout.ts) */
@@ -793,16 +751,11 @@
     white-space: nowrap;
   }
 
-  :lang(ar) .hero__actions .btn {
-    font-size: 0.92rem;
-  }
-
   .hero__body {
     margin-top: 0.7rem;
   }
 
-  .stage__still--hero,
-  [dir='rtl'] .stage__still--hero {
+  .stage__still--hero {
     top: 76%;
     height: 46.5%;
   }
@@ -832,6 +785,7 @@
 .static-hero {
   position: relative;
   overflow: hidden;
+  min-height: 100svh;
   background: radial-gradient(120% 95% at 66% 44%, #5a1b26 0%, var(--stage-burgundy) 62%);
 }
 
@@ -847,16 +801,46 @@
   width: 54%;
   height: 93%;
   object-fit: contain;
+  object-position: center bottom;
   transform: translate(-50%, -50%);
+  z-index: 1;
 }
 
-[dir='rtl'] .static-hero__still {
-  transform: translate(50%, -50%);
+.static-hero__gift {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100svh;
+  width: min(33rem, 42vw);
+  margin-inline-start: clamp(0px, 3vw, 56px);
+  padding: calc(var(--header-h) + 1.5rem) var(--gutter) 2rem;
+  color: var(--ivory);
+}
+
+.static-hero__gift-title {
+  margin-top: 0.35em;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.6vw, 4.4rem);
+  font-weight: 500;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.static-hero__gift-body {
+  margin-top: 1.2rem;
+  max-width: 28rem;
+  font-size: clamp(1rem, 1.2vw, 1.15rem);
+  line-height: 1.6;
+  color: rgb(245 236 221 / 0.86);
 }
 
 .static-hero .hero {
   margin-top: 0;
   pointer-events: auto;
+  opacity: 1;
+  visibility: visible;
 }
 
 .static-hero .hero__scroll svg {
@@ -969,12 +953,19 @@
 }
 
 @media (max-width: 899.98px), (max-aspect-ratio: 1.05) {
-  .static-hero__still,
-  [dir='rtl'] .static-hero__still {
+  .static-hero__still {
     inset-inline-start: 50%;
     top: 72.5%;
     width: 90%;
     height: 53%;
+  }
+
+  .static-hero__gift {
+    width: min(34rem, 90vw);
+    margin-inline: auto;
+    padding-top: calc(var(--header-h) + 1rem);
+    min-height: auto;
+    padding-bottom: 42vh;
   }
 }
 

@@ -84,7 +84,7 @@ button {
   border: 0;
 }
 
-/* Numbers keep Latin lining figures in both languages, as in the booklet */
+/* Numbers keep Latin lining figures, as in the booklet */
 .numeral {
   font-variant-numeric: lining-nums;
   font-feature-settings: 'lnum' 1;
@@ -106,10 +106,6 @@ button {
   letter-spacing: var(--tracking-wide);
   text-transform: var(--caps);
   color: var(--accent);
-}
-
-:lang(ar) .eyebrow {
-  font-size: 0.95rem;
 }
 
 .ornament {
@@ -147,19 +143,11 @@ button {
     border-color 0.25s var(--ease);
 }
 
-:lang(ar) .btn {
-  font-size: 1rem;
-}
-
 .btn--small {
   min-height: 40px;
   padding: 0.5em 1.2em;
   font-size: 0.72rem;
   white-space: nowrap;
-}
-
-:lang(ar) .btn--small {
-  font-size: 0.9rem;
 }
 
 .btn--gold {

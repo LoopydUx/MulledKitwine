@@ -5,12 +5,11 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { Wordmark } from './bits';
 
 export function Footer({ mode, canAnimate, onChoose }: { mode: StageMode; canAnimate: boolean; onChoose: (mode: StageMode) => void }) {
-  const { t, l } = useLanguage();
+  const { t } = useLanguage();
   return (
     <footer className="site-footer">
       <div className="site-footer__brand">
         <Wordmark />
-        <p className="site-footer__signature">{l(brand.signature)}</p>
       </div>
       <nav aria-label={t.footer.links}>
         <ul className="site-footer__links">
